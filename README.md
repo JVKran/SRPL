@@ -1,19 +1,25 @@
 # KRAN++
+## Non code like language
+Litteraly everybody working in IT has at least touched code once and is *at least* able to write a simple Hello World program. It is however, a common occurance that it's hard for people to explain to interested non-IT people (for example family members) what they're doing on a daily basis. Most languages feature all kinds of fancy operators and syntax requirements that prevent non-IT people from trying a little something out themselves. In these kind of situations, KRAN++ comes into play.
 
 ## Language
-| Type                  | Token     |
-| --------------------- |---------- |
-| Assignment            | is        |
-| Add operator          | plus      |
-| Substract operator    | min       |
-| Multiply operator     | mul       |
-| Divide operator       | div       |
-| If                    | when      |
-| Else                  | else      |
-| Equalilty operator    | eq        |
-| Non-Equality operator | neq       |
-| Termination           | ]         |
-| Print                 | log       |
+| Type                  | Token                     |
+| --------------------- |-------------------------- |
+| Assignment            | is                        |
+| Add operator          | plus                      |
+| Substract operator    | min                       |
+| Multiply operator     | multiplied by             |
+| Divide operator       | divided by                |
+| If                    | when                      |
+| Else                  | else                      |
+| Equalilty operator    | is equal to               |
+| Non-Equality operator | is not equal to           |
+| Termination           | ]                         |
+| Print                 | log                       |
+| Larger than           | larger than               |
+| Larger than or equal  | larger than or equal to   |
+| Less than             | less than                 |
+| Less than or equal    | less than or equal to     |
 
 ## Example
 ``` KRAN++
