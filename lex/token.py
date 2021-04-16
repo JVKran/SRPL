@@ -1,10 +1,11 @@
 
-def create_dict(cls, map, index):
-    if index >= 0:
-        map.update({cls.__subclasses__()[index].name: cls.__subclasses__()[index]})
-        return create_dict(cls, map, index - 1)
-    else:
-        return map
+def createSubclassDict(subclasses, subclassDict):
+    if not subclasses:
+        return subclassDict
+    else: 
+        subclassDict.update({subclasses[0].name: subclasses[0]})
+        return createSubclassDict(subclasses[1:], subclassDict)
+
 
 class Token():
 
@@ -13,11 +14,10 @@ class Token():
         self.stringToParse = stringToParse
 
     def __new__(cls, stringToParse : str, lineNumber : int):
-        subclass_map = {}
-        create_dict(cls, subclass_map, len(cls.__subclasses__()) - 1)
-        print(subclass_map)
+        subclassDict = {}
+        createSubclassDict(cls.__subclasses__(), subclassDict)
         try:
-            subclass = subclass_map[stringToParse]
+            subclass = subclassDict[stringToParse]
         except KeyError:
             subclass = VariableToken
         instance = super(Token, subclass).__new__(subclass)
