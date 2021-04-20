@@ -28,20 +28,35 @@ class Lexer():
 
         while self.current_char != None:
             if self.current_char in DIGITS:
-                print("Final word:", word)
-                word = ""
+                if word != " ":
+                    print("Final word:", word)
+                    word = ""
                 self.make_number()
             else:
                 word += self.current_char
-                print("Running word:", word)
+                # print("Running word:", word)
                 possible_lexemes = check_strings(subclassDict.keys(), word).count(True)
-                print("Amount of lexemes:", possible_lexemes)
-                if possible_lexemes == 1 and self.current_char == ' ':
+                lexeme_index = 0
+                if possible_lexemes == 1:
+                    lexeme_index = check_strings(subclassDict.keys(), word).index(True)
+                # print("Amount of lexemes:", possible_lexemes)
+                # print("Length of lexeme: ", len(list(subclassDict.keys())[lexeme_index]))
+                # print("Length of word:", len(word))
+                if possible_lexemes == 1 and len(list(subclassDict.keys())[lexeme_index]) == len(word) and word != " ":
                     print("Final word:", word)
                     word = ""
-            if self.current_char == ' ' and possible_lexemes == 0:
-                print("Variable:", word)
-                word = ""
+                elif self.current_char == ' ' and possible_lexemes == 0 and word != " ":
+                    print("Variable:", word)
+                    word = ""
+                elif possible_lexemes == 0 and ' ' in word:
+                    # print("Oh no! We missed a word...", word)
+                    tooMuch = word[-1:]
+                    word = word[:-2]
+                    if word != "":
+                        print("Final word:", word)
+                    word = tooMuch
+
+
             self.advance()
 
         return tokens

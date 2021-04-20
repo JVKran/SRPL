@@ -7,5 +7,5 @@ if __name__ == '__main__':
     print("Value", testToken.stringToParse, end=" ")
     print("at linenumber", testToken.lineNumber)
 
-    lexer = lexer.Lexer("condition is 5 is equal to 4.1 ")
+    lexer = lexer.Lexer("condition is 5 is less than 4.1 ")
     lexer.make_tokens()
