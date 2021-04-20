@@ -23,6 +23,12 @@ class Token():
             subclassDict.update({subclasses[0].name: subclasses[0]})
             return Token.createSubclassDict(subclasses[1:], subclassDict)
 
+    def __str__(self):
+        return self.__class__.__name__
+
+    def __repr__(self):
+        return str(self)
+
 
 class AssignmentToken(Token):
     name = "is"
