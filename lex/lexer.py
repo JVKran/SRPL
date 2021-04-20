@@ -1,62 +1,55 @@
 from lex import token
 
-DIGITS = '0123456789'
-
 def check_strings(search_list, input_string):
     return [s.startswith(input_string) for s in search_list]
 
 class Lexer():
 
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, filename : str):
+        file = open(filename,"r")
+        self.text = file.readlines()
+        file.close()
+
         self.pos = -1
         self.current_char = None
         self.advance()
     
     def advance(self):
         self.pos += 1
-        self.current_char = self.text[self.pos] if self.pos < len(self.text) else None
+        self.current_char = self.text[0][self.pos] if self.pos < len(self.text[0]) else None
 
     def make_tokens(self):
         tokens = []
         subclassDict = {}
         token.Token.createSubclassDict(token.Token.__subclasses__(), subclassDict)
-        print(subclassDict.keys())
 
         word = ""
         possible_lexemes = 0
 
         while self.current_char != None:
-            if self.current_char in DIGITS:
+            if self.current_char.isdigit():
                 if word != " ":
-                    print("Final word:", word)
+                    tokens.append(token.Token(word[:-1], 1))
                     word = ""
-                self.make_number()
+                tokens.append(self.make_number())
             else:
                 word += self.current_char
-                # print("Running word:", word)
-                possible_lexemes = check_strings(subclassDict.keys(), word).count(True)
+                possible_lexemes = check_strings(subclassDict.keys(), word).count(True)         # List with True or False for all available lexemes.
                 lexeme_index = 0
                 if possible_lexemes == 1:
-                    lexeme_index = check_strings(subclassDict.keys(), word).index(True)
-                # print("Amount of lexemes:", possible_lexemes)
-                # print("Length of lexeme: ", len(list(subclassDict.keys())[lexeme_index]))
-                # print("Length of word:", len(word))
+                    lexeme_index = check_strings(subclassDict.keys(), word).index(True)         # Index of first possible lexeme.
                 if possible_lexemes == 1 and len(list(subclassDict.keys())[lexeme_index]) == len(word) and word != " ":
-                    print("Final word:", word)
+                    tokens.append(token.Token(word[:-1], 1))
                     word = ""
                 elif self.current_char == ' ' and possible_lexemes == 0 and word != " ":
-                    print("Variable:", word)
+                    tokens.append(token.Token(word[:-1], 1))
                     word = ""
-                elif possible_lexemes == 0 and ' ' in word:
-                    # print("Oh no! We missed a word...", word)
-                    tooMuch = word[-1:]
+                elif possible_lexemes == 0 and ' ' in word:                                     # Read two characters too far; now there are no lexemes anymore.
+                    excessCharacters = word[-1:]
                     word = word[:-2]
                     if word != "":
-                        print("Final word:", word)
-                    word = tooMuch
-
-
+                        tokens.append(token.Token(word[:-1], 1))
+                    word = excessCharacters
             self.advance()
 
         return tokens
@@ -65,7 +58,7 @@ class Lexer():
         num_str = ''
         dot_count = 0
 
-        while self.current_char != None and self.current_char in DIGITS + '.':
+        while self.current_char != None and (self.current_char.isdigit() or self.current_char == '.'):
             if self.current_char == '.':
                 if dot_count == 1: break
                 dot_count += 1
@@ -74,8 +67,6 @@ class Lexer():
                 num_str += self.current_char
             self.advance()
 
-        # print("Number made.")
         if dot_count == 0:
-            print("Integer:", int(num_str))
-            return
-        print("Float:", float(num_str))
+            return token.IntegerToken(int(num_str), 1)
+        return token.FloatToken(float(num_str), 1)

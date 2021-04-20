@@ -62,3 +62,23 @@ class ReturnToken(Token):
 
 class VariableToken(Token):
     name = ""
+
+class IntegerToken(Token):
+    name = ""
+
+    def __init__(self, integer : int, lineNumber : int):
+        self.value = integer
+        self.lineNumber = lineNumber
+
+    def __new__(cls, stringToParse : str, lineNumber : int):
+        return super(Token, IntegerToken).__new__(IntegerToken)
+
+class FloatToken(Token):
+    name = ""
+
+    def __init__(self, float : float, lineNumber : int):
+        self.value = float
+        self.lineNumber = lineNumber
+
+    def __new__(cls, stringToParse : str, lineNumber : int):
+        return super(Token, FloatToken).__new__(FloatToken)
