@@ -28,15 +28,20 @@ class Lexer():
 
         while self.current_char != None:
             if self.current_char in DIGITS:
+                print("Final word:", word)
+                word = ""
                 self.make_number()
             else:
                 word += self.current_char
-                # print("Running word:", word)
+                print("Running word:", word)
                 possible_lexemes = check_strings(subclassDict.keys(), word).count(True)
-                # print("Amount of lexemes:", possible_lexemes)
-                if possible_lexemes == 1:
-                    print(word)
+                print("Amount of lexemes:", possible_lexemes)
+                if possible_lexemes == 1 and self.current_char == ' ':
+                    print("Final word:", word)
                     word = ""
+            if self.current_char == ' ' and possible_lexemes == 0:
+                print("Variable:", word)
+                word = ""
             self.advance()
 
         return tokens
