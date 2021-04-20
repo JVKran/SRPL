@@ -11,12 +11,20 @@ class Lexer():
         file.close()
 
         self.pos = -1
+        self.lineNumber = 0
         self.current_char = None
         self.advance()
     
     def advance(self):
         self.pos += 1
-        self.current_char = self.text[0][self.pos] if self.pos < len(self.text[0]) else None
+        if self.pos < len(self.text[self.lineNumber]):
+            self.current_char = self.text[self.lineNumber][self.pos]
+        elif self.lineNumber < len(self.text) - 1:
+            self.lineNumber += 1
+            self.pos = 0
+            self.current_char = self.text[self.lineNumber][self.pos]
+        else:
+            self.current_char = None
 
     def make_tokens(self):
         tokens = []
@@ -27,9 +35,13 @@ class Lexer():
         possible_lexemes = 0
 
         while self.current_char != None:
+            if self.current_char in "\t\n":
+                self.advance()
+                word = ""
+                continue
             if self.current_char.isdigit():
                 if word != " ":
-                    tokens.append(token.Token(word[:-1], 1))
+                    tokens.append(token.Token(word[:-1], self.lineNumber))
                     word = ""
                 tokens.append(self.make_number())
             else:
@@ -39,16 +51,16 @@ class Lexer():
                 if possible_lexemes == 1:
                     lexeme_index = check_strings(subclassDict.keys(), word).index(True)         # Index of first possible lexeme.
                 if possible_lexemes == 1 and len(list(subclassDict.keys())[lexeme_index]) == len(word) and word != " ":
-                    tokens.append(token.Token(word[:-1], 1))
+                    tokens.append(token.Token(word[:-1], self.lineNumber))
                     word = ""
                 elif self.current_char == ' ' and possible_lexemes == 0 and word != " ":
-                    tokens.append(token.Token(word[:-1], 1))
+                    tokens.append(token.Token(word[:-1], self.lineNumber))
                     word = ""
                 elif possible_lexemes == 0 and ' ' in word:                                     # Read two characters too far; now there are no lexemes anymore.
                     excessCharacters = word[-1:]
                     word = word[:-2]
                     if word != "":
-                        tokens.append(token.Token(word[:-1], 1))
+                        tokens.append(token.Token(word[:-1], self.lineNumber))
                     word = excessCharacters
             self.advance()
 
@@ -68,5 +80,5 @@ class Lexer():
             self.advance()
 
         if dot_count == 0:
-            return token.IntegerToken(int(num_str), 1)
-        return token.FloatToken(float(num_str), 1)
+            return token.IntegerToken(int(num_str), self.lineNumber)
+        return token.FloatToken(float(num_str), self.lineNumber)

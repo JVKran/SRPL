@@ -24,7 +24,7 @@ class Token():
             return Token.createSubclassDict(subclasses[1:], subclassDict)
 
     def __str__(self):
-        return self.__class__.__name__
+        return self.__class__.__name__ + str(" (" + str(self.stringToParse) + ')')
 
     def __repr__(self):
         return str(self)
@@ -69,11 +69,17 @@ class ReturnToken(Token):
 class VariableToken(Token):
     name = ""
 
+class FunctionToken(Token):
+    name = "task"
+
+class FunctionStartToken(Token):
+    name = "consists of"
+
 class IntegerToken(Token):
     name = ""
 
     def __init__(self, integer : int, lineNumber : int):
-        self.value = integer
+        self.stringToParse = integer
         self.lineNumber = lineNumber
 
     def __new__(cls, stringToParse : str, lineNumber : int):
@@ -83,7 +89,7 @@ class FloatToken(Token):
     name = ""
 
     def __init__(self, float : float, lineNumber : int):
-        self.value = float
+        self.stringToParse = float
         self.lineNumber = lineNumber
 
     def __new__(cls, stringToParse : str, lineNumber : int):
