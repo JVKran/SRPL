@@ -1,3 +1,4 @@
+from typing import *
 
 class Token():
 
@@ -16,17 +17,17 @@ class Token():
         return instance
 
     @staticmethod
-    def createSubclassDict(subclasses, subclassDict):
+    def createSubclassDict(subclasses : List, subclassDict : Dict) -> Dict:
         if not subclasses:
             return subclassDict
         else: 
             subclassDict.update({subclasses[0].name: subclasses[0]})
             return Token.createSubclassDict(subclasses[1:], subclassDict)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.__class__.__name__ + str(" (" + str(self.stringToParse) + ')')
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
 

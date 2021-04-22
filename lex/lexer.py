@@ -6,7 +6,7 @@ def check_strings(search_list, input_string):
 class Lexer():
 
     def __init__(self, filename : str):
-        file = open(filename,"r")
+        file = open(filename, "r")
         self.text = file.readlines()
         file.close()
 
