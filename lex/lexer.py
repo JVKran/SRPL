@@ -9,15 +9,6 @@ C = TypeVar('C')
 def check_strings(search_list, input_string):
     return [s.startswith(input_string) for s in search_list]
 
-def foldl(f: Callable[[A, B], C], base : B, list : List[A]) -> List[C]:
-    if not list:
-        return base
-    head, *tail = list
-    return (f(head, foldl(f, base, tail)))
-
-def tupleToToken(x : Tuple[str,int], tail : List[token.Token]) -> List[token.Token]:
-    return [token.Token(x[0], x[1])] + tail
-
 def createWordList(line : str) -> List[str]:
     if not line:
         return [""]
@@ -36,8 +27,8 @@ def readFile(filename : str):
     file.close()
     return text
 
-def wordToToken(word : str):
-    return token.Token(word)
+def wordToToken(tuple):
+    return token.Token(*tuple)
 
 def textToTokens(f : Callable[[str,int], List[token.Token]], text : List[str]) -> List[token.Token]:
     if not text:
@@ -46,9 +37,9 @@ def textToTokens(f : Callable[[str,int], List[token.Token]], text : List[str]) -
 
 def lineToTokens(line : str, lineNumber : int):
     wordList = createWordList(line)
-    tokenList = list(map(wordToToken, wordList))
     lineList = [lineNumber] * len(line)
-    tokenList = list(zip(tokenList, lineList))
+    wordList = list(zip(wordList, lineList))
+    tokenList = list(map(wordToToken, wordList))
     return tokenList
 
 def lex(fileName : str):
