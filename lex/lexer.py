@@ -1,7 +1,49 @@
 from lex import token
+from typing import *
+
+A = TypeVar('A')
+B = TypeVar('B')
+C = TypeVar('C')
+
 
 def check_strings(search_list, input_string):
     return [s.startswith(input_string) for s in search_list]
+
+def foldl(f: Callable[[A, B], C], base : B, list : List[A]) -> List[C]:
+    if not list:
+        return base
+    head, *tail = list
+    return (f(head, foldl(f, base, tail)))
+
+def tupleToToken(x : Tuple[str,int], tail : List[token.Token]) -> List[token.Token]:
+    return [token.Token(x[0], x[1])] + tail
+
+def createWordList(string_file : str) -> List[str]:
+    if not string_file:
+        return [""]
+    head, *tail = string_file
+    currentWordList = createWordList(tail)
+    if head in " \t\n\r":
+        currentWordList = [""] + currentWordList
+    else:
+        newWord = head + currentWordList[0]
+        currentWordList[0] = newWord
+    return currentWordList
+
+def readFile(f : Callable [[A], B], filename : str):
+    file = open(filename, "r")
+    text = file.read()
+    file.close()
+    return f(text)
+
+def wordToToken(word : str):
+    return token.Token(word, 1)
+
+def lex(fileName : str):
+    text = readFile(createWordList, fileName)
+    text = list(map(wordToToken, text))
+    return text
+
 
 class Lexer():
 

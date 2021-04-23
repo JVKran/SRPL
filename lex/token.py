@@ -41,28 +41,28 @@ class SubstractToken(Token):
     name = "min"
 
 class DivideToken(Token):
-    name = "divided by"
+    name = "divided_by"
 
 class MultiplyToken(Token):
-    name = "multiplied by"
+    name = "multiplied_by"
 
 class EqualityToken(Token):
-    name = "is equal to"
+    name = "is_equal_to"
 
 class NonEqualityToken(Token):
-    name = "is not equal to"
+    name = "is_not_equal_to"
 
 class GreaterToken(Token):
-    name = "is greater than"
+    name = "is_greater_than"
 
 class GreaterEqualToken(Token):
-    name = "is greater than or equal to"
+    name = "is_greater_than_or_equal_to"
 
 class LessToken(Token):
-    name = "is less than"
+    name = "is_less_than"
 
 class LessEqualToken(Token):
-    name = "is less than or equal to"
+    name = "is_less_than_or_equal_to"
 
 class ReturnToken(Token):
     name = "flush"
@@ -74,7 +74,7 @@ class FunctionToken(Token):
     name = "task"
 
 class FunctionStartToken(Token):
-    name = "consists of"
+    name = "consists_of"
 
 class IntegerToken(Token):
     name = ""

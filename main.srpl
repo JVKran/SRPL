@@ -1,8 +1,8 @@
-condition is 5 is less than 4.1
+condition is 5 is_less_than 4.1
 file is 8
 
-task dust consists of 
-    roomlength is 5
-    roomwidth is 10
-    roomarea is roomlength multiplied by roomwidth
-    flush roomarea 
+task dust consists_of 
+	roomlength is 5
+	roomwidth is 10
+	roomarea is roomlength multiplied_by roomwidth
+	flush roomarea 

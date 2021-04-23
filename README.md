@@ -8,18 +8,18 @@ Litteraly everybody working in IT has at least touched code once and is *at leas
 | Assignment            | is                        |
 | Add operator          | plus                      |
 | Substract operator    | min                       |
-| Multiply operator     | multiplied by             |
-| Divide operator       | divided by                |
+| Multiply operator     | multiplied_by             |
+| Divide operator       | divided_by                |
 | If                    | when                      |
 | Else                  | else                      |
-| Equalilty operator    | is equal to               |
-| Non-Equality operator | is not equal to           |
+| Equalilty operator    | is_equal_to               |
+| Non-Equality operator | is_not_equal_to           |
 | Termination           | ]                         |
 | Print                 | log                       |
-| Greater than          | greater than              |
-| Greater than or equal | greater than or equal to  |
-| Less than             | less than                 |
-| Less than or equal    | less than or equal to     |
+| Greater than          | greater_than              |
+| Greater than or equal | greater_than_or_equal_to  |
+| Less than             | less_than                 |
+| Less than or equal    | less_than_or_equal_to     |
 
 ## Example
 ``` KRAN++
