@@ -37,7 +37,7 @@ def readFile(filename : str):
     return text
 
 def wordToToken(word : str):
-    return token.Token(word, 1)
+    return token.Token(word)
 
 def textToTokens(f : Callable[[str,int], List[token.Token]], text : List[str]) -> List[token.Token]:
     if not text:
@@ -47,6 +47,8 @@ def textToTokens(f : Callable[[str,int], List[token.Token]], text : List[str]) -
 def lineToTokens(line : str, lineNumber : int):
     wordList = createWordList(line)
     tokenList = list(map(wordToToken, wordList))
+    lineList = [lineNumber] * len(line)
+    tokenList = list(zip(tokenList, lineList))
     return tokenList
 
 def lex(fileName : str):

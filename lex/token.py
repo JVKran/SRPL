@@ -2,11 +2,10 @@ from typing import *
 
 class Token():
 
-    def __init__(self, stringToParse : str, lineNumber : int):
-        self.lineNumber = lineNumber
+    def __init__(self, stringToParse : str):
         self.stringToParse = stringToParse
 
-    def __new__(cls, stringToParse : str, lineNumber : int):
+    def __new__(cls, stringToParse : str):
         subclassDict = {}
         Token.createSubclassDict(cls.__subclasses__(), subclassDict)
         try:
@@ -79,19 +78,17 @@ class FunctionStartToken(Token):
 class IntegerToken(Token):
     name = ""
 
-    def __init__(self, integer : int, lineNumber : int):
+    def __init__(self, integer : int):
         self.stringToParse = integer
-        self.lineNumber = lineNumber
 
-    def __new__(cls, stringToParse : str, lineNumber : int):
+    def __new__(cls, stringToParse : str):
         return super(Token, IntegerToken).__new__(IntegerToken)
 
 class FloatToken(Token):
     name = ""
 
-    def __init__(self, float : float, lineNumber : int):
+    def __init__(self, float : float):
         self.stringToParse = float
-        self.lineNumber = lineNumber
 
-    def __new__(cls, stringToParse : str, lineNumber : int):
+    def __new__(cls, stringToParse : str):
         return super(Token, FloatToken).__new__(FloatToken)
