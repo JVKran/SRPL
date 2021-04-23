@@ -18,10 +18,10 @@ def foldl(f: Callable[[A, B], C], base : B, list : List[A]) -> List[C]:
 def tupleToToken(x : Tuple[str,int], tail : List[token.Token]) -> List[token.Token]:
     return [token.Token(x[0], x[1])] + tail
 
-def createWordList(string_file : str) -> List[str]:
-    if not string_file:
+def createWordList(line : str) -> List[str]:
+    if not line:
         return [""]
-    head, *tail = string_file
+    head, *tail = line
     currentWordList = createWordList(tail)
     if head in " \t\n\r":
         currentWordList = [""] + currentWordList
@@ -30,19 +30,29 @@ def createWordList(string_file : str) -> List[str]:
         currentWordList[0] = newWord
     return currentWordList
 
-def readFile(f : Callable [[A], B], filename : str):
+def readFile(filename : str):
     file = open(filename, "r")
-    text = file.read()
+    text = file.readlines()
     file.close()
-    return f(text)
+    return text
 
 def wordToToken(word : str):
     return token.Token(word, 1)
 
+def textToTokens(f : Callable[[str,int], List[token.Token]], text : List[str]) -> List[token.Token]:
+    if not text:
+        return []
+    return textToTokens(f, text[:-1]) + f(text[-1], len(text))
+
+def lineToTokens(line : str, lineNumber : int):
+    wordList = createWordList(line)
+    tokenList = list(map(wordToToken, wordList))
+    return tokenList
+
 def lex(fileName : str):
-    text = readFile(createWordList, fileName)
-    text = list(map(wordToToken, text))
-    return text
+    text = readFile(fileName)
+    tokenList = textToTokens(lineToTokens, text)
+    return tokenList
 
 
 class Lexer():
