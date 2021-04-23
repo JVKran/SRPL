@@ -9,10 +9,16 @@ class Token():
     def __new__(cls, stringToParse : str, lineNumber : int):
         subclassDict = {}
         Token.createSubclassDict(cls.__subclasses__(), subclassDict)
-        try:
-            subclass = subclassDict[stringToParse]
-        except KeyError:
-            subclass = VariableToken
+        if stringToParse and stringToParse[0].isdigit():
+            if '.' in stringToParse:
+                subclass = FloatToken
+            else:
+                subclass = IntegerToken
+        else:
+            try:
+                subclass = subclassDict[stringToParse]
+            except KeyError:
+                subclass = VariableToken
         instance = super(Token, subclass).__new__(subclass)
         return instance
 
