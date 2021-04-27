@@ -38,7 +38,8 @@ def lineToTokens(line : str, lineNumber : int):
     tokenList = list(map(wordToToken, wordList))
     return tokenList
 
-def lex(fileName : str):
-    text = readFile(fileName)
+def lex(text : str, fileName : str):
+    if text == None:
+        text = readFile(fileName)
     tokenList = textToTokens(lineToTokens, text)
     return tokenList

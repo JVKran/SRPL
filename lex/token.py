@@ -31,7 +31,7 @@ class Token():
             return Token.createSubclassDict(subclasses[1:], subclassDict)
 
     def __str__(self) -> str:
-        return self.__class__.__name__ + str(" \'" + str(self.stringToParse) + "\' at line " + str(self.lineNumber))
+        return self.__class__.__name__ + str(" \'" + str(self.stringToParse) + "\'")
 
     def __repr__(self) -> str:
         return str(self)
