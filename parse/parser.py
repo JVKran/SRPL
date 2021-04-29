@@ -31,29 +31,37 @@ class OperatorNode():
     def __repr__(self):
         return f'({self.left_node}, {self.operator}, {self.right_node})'
 
-def factor(tokenList : List[token.Token]):
-    if type(tokenList[0]) in (token.IntegerToken, token.FloatToken):
-        tokenList = tokenList[1:]
-        return NumberNode(token)
+def incrementTokenIndex(tokenIndex, length):
+    if tokenIndex >= length - 1:
+        return tokenIndex
+    return tokenIndex + 1
 
-def term(tokenList : List[token.Token]):
-    return binaryOperator(tokenList, factor, (token.MultiplyToken, token.DivideToken))
+def factor(tokenList : List[token.Token], tokenIndex):
+    if type(tokenList[tokenIndex]) in (token.IntegerToken, token.FloatToken):
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        print(tokenIndex)
+        return tokenIndex, NumberNode(tokenList[tokenIndex])
 
-def expression(tokenList : List[token.Token]):
-    return binaryOperator(tokenList, term, (token.AddToken, token.SubstractToken))
+def term(tokenList : List[token.Token], tokenIndex):
+    tokenIndex, res = binaryOperator(tokenList, factor, (token.MultiplyToken, token.DivideToken), tokenIndex)
+    return tokenIndex, res
 
-def binaryOperator(tokenList : List[token.Token], function, operations):
-    left = function(tokenList[1:])
-    print("Tokenlist:", tokenList)
+def expression(tokenList : List[token.Token], tokenIndex):
+    return binaryOperator(tokenList, term, (token.AddToken, token.SubstractToken), tokenIndex)
 
-    while type(tokenList[0]) in operations:
+def binaryOperator(tokenList : List[token.Token], function, operations, tokenIndex):
+    tokenIndex, left = function(tokenList, tokenIndex)
+    print(tokenIndex)
+
+    while type(tokenList[tokenIndex]) in operations:
         print("In operations!")
-        operatorToken = tokenList[0]
-        right = function(tokenList[1:])
+        operatorToken = tokenList[tokenIndex]
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex, right = function(tokenList, tokenIndex)
         left = OperatorNode(left, operatorToken, right)
     print("Back!")
-    return left
+    return tokenIndex, left
 
 def parse(tokens: List[token.Token]):
-    res = expression(tokens)
+    index, res = expression(tokens, 0)
     return res
