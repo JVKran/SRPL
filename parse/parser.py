@@ -37,10 +37,11 @@ def incrementTokenIndex(tokenIndex, length):
     return tokenIndex + 1
 
 def factor(tokenList : List[token.Token], tokenIndex):
-    if type(tokenList[tokenIndex]) in (token.IntegerToken, token.FloatToken):
+    currentToken = tokenList[tokenIndex]
+    if type(currentToken) in (token.IntegerToken, token.FloatToken):
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         print(tokenIndex)
-        return tokenIndex, NumberNode(tokenList[tokenIndex])
+        return tokenIndex, NumberNode(currentToken)
 
 def term(tokenList : List[token.Token], tokenIndex):
     tokenIndex, res = binaryOperator(tokenList, factor, (token.MultiplyToken, token.DivideToken), tokenIndex)
@@ -54,12 +55,10 @@ def binaryOperator(tokenList : List[token.Token], function, operations, tokenInd
     print(tokenIndex)
 
     while type(tokenList[tokenIndex]) in operations:
-        print("In operations!")
         operatorToken = tokenList[tokenIndex]
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         tokenIndex, right = function(tokenList, tokenIndex)
         left = OperatorNode(left, operatorToken, right)
-    print("Back!")
     return tokenIndex, left
 
 def parse(tokens: List[token.Token]):
