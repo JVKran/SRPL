@@ -1,5 +1,6 @@
 from lex import token, lexer
 from parse import parser
+from interpret import interpreter
 import sys
 
 def file():
@@ -19,6 +20,9 @@ def shell():
 
         ast = parser.parse(tokens)
         print("\tAST:", ast)
+
+        result = interpreter.visit(ast)
+        print("\t" + str(result))
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:

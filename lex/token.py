@@ -86,7 +86,7 @@ class IntegerToken(Token):
     name = ""
 
     def __init__(self, integer : int, lineNumber : int):
-        self.stringToParse = integer
+        self.stringToParse = int(integer)
         self.lineNumber = lineNumber
 
     def __new__(cls, stringToParse : str):
@@ -95,8 +95,8 @@ class IntegerToken(Token):
 class FloatToken(Token):
     name = ""
 
-    def __init__(self, float : float, lineNumber : int):
-        self.stringToParse = float
+    def __init__(self, value : float, lineNumber : int):
+        self.stringToParse = float(value)
         self.lineNumber = lineNumber
 
     def __new__(cls, stringToParse : str):
