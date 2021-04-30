@@ -4,10 +4,10 @@ import sys
 
 def file():
     tokens = lexer.lex(None, sys.argv[1])
-    print("\tTOKENS:", tokens)
+    print("TOKENS:", tokens)
 
     ast = parser.parse(tokens)
-    print("\tAST:", ast)
+    print("AST:", ast)
 
 def shell():
     while True:
