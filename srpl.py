@@ -4,10 +4,10 @@ import sys
 
 def file():
     tokens = lexer.lex(None, sys.argv[1])
-    print("Tokens:", tokens)
+    print("\tTOKENS:", tokens)
 
     ast = parser.parse(tokens)
-    print("Abstract syntax tree:", ast)
+    print("\tAST:", ast)
 
 def shell():
     while True:
@@ -15,10 +15,10 @@ def shell():
         if text == "exit": exit()
 
         tokens = lexer.lex([text], None)
-        print("Tokens:", tokens)
+        print("\tTOKENS:", tokens)
 
         ast = parser.parse(tokens)
-        print("Abstract syntax tree:", ast)
+        print("\tAST:", ast)
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:

@@ -40,7 +40,6 @@ def factor(tokenList : List[token.Token], tokenIndex):
     currentToken = tokenList[tokenIndex]
     if type(currentToken) in (token.IntegerToken, token.FloatToken):
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-        print(tokenIndex)
         return tokenIndex, NumberNode(currentToken)
 
 def term(tokenList : List[token.Token], tokenIndex):
@@ -52,7 +51,6 @@ def expression(tokenList : List[token.Token], tokenIndex):
 
 def binaryOperator(tokenList : List[token.Token], function, operations, tokenIndex):
     tokenIndex, left = function(tokenList, tokenIndex)
-    print(tokenIndex)
 
     while type(tokenList[tokenIndex]) in operations:
         operatorToken = tokenList[tokenIndex]
