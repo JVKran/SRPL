@@ -1,6 +1,7 @@
 from lex import token, lexer
 from parse import parser
-from interpret import interpreter
+from interpret.interpreter import *
+from interpret.context import *
 import sys
 
 def file():
@@ -10,11 +11,13 @@ def file():
     ast = parser.parse(tokens)
     print("AST:", ast)
 
-    result = interpreter.visit(ast)
+    context = Context("<main>")
+    result = visit(ast, context)
     print(str(result))
 
 def shell():
     try:
+        context = Context("<main>")
         while True:
             text = input("SRPL > ")
             if text == "exit": exit()
@@ -25,7 +28,7 @@ def shell():
             ast = parser.parse(tokens)
             print("\tAST:", ast)
 
-            result = interpreter.visit(ast)
+            result = visit(ast, context)
             print("\t" + str(result))
     except KeyboardInterrupt:
         return

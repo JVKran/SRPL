@@ -76,6 +76,9 @@ class ReturnToken(Token):
 class VariableToken(Token):
     name = ""
 
+class VariableKeywordToken(Token):
+    name = "variable"
+
 class FunctionToken(Token):
     name = "task"
 

@@ -1,6 +1,6 @@
-# SURPLE
+# SRPL
 ## Non code like language
-Litteraly everybody working in IT has at least touched code once and is *at least* able to write a simple Hello World program. It is however, a common occurance that it's hard for people to explain to interested non-IT people (for example family members) what they're doing on a daily basis. Most languages feature all kinds of fancy operators and syntax requirements that prevent non-IT people from trying a little something out themselves. In these kind of situations, SURPLE comes into play; the SUpeR simPLE language!
+Litteraly everybody working in IT has at least touched code once and is *at least* able to write a simple Hello World program. It is however, a common occurance that it's hard for people to explain to interested non-IT people (for example family members) what they're doing on a daily basis. Most languages feature all kinds of fancy operators and syntax requirements that prevent non-IT people from trying a little something out themselves. In these kind of situations, SRPL comes into play; the SupeR simPle Language!
 
 ## Language
 | Type                  | Token                     |

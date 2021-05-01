@@ -1,6 +1,7 @@
 from lex import token
 from parse import parser
 from typing import TypeVar, Union
+from interpret.context import *
 
 A = TypeVar('A')
 B = TypeVar('B')
@@ -30,14 +31,14 @@ class Number():
         return str(self.value)
 
 
-def visit(node : parser.Node) -> Number:
+def visit(node : parser.Node, context : Context) -> Number:
     function_name = f'visit{type(node).__name__}'
     function = globals()[function_name]
-    return function(node)
+    return function(node, context)
 
-def visitOperatorNode(node : parser.Node) -> Number:
-    left = visit(node.left_node)
-    right = visit(node.right_node)
+def visitOperatorNode(node : parser.Node, context : Context) -> Number:
+    left = visit(node.left_node, context)
+    right = visit(node.right_node, context)
 
     if type(node.operator) == token.AddToken:
         result = left.add(right)
@@ -51,8 +52,17 @@ def visitOperatorNode(node : parser.Node) -> Number:
     # result.setLineNumber(node.token.lineNumber)
     return result
 
-def visitNumberNode(node : parser.Node) -> Number:
+def visitNumberNode(node : parser.Node, context : Context) -> Number:
     number = Number(node.token.stringToParse)
     number.setLineNumber(node.token.lineNumber)
     return number
 
+def visitVariableNode(node : parser.Node, context : Context):
+    if node.value == None:
+        variableName = node.var_name.stringToParse
+        value = context.get_symbol(variableName)
+    else:
+        variableName = node.var_name
+        value = visit(node.value[1], context)
+        context.add_symbol(variableName, value)
+    return value

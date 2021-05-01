@@ -1,1 +1,2 @@
-6 plus 5 multiplied_by 2
+variable result is 6 plus 5 multiplied_by 2
+variable otherResult is result multiplied_by 4
