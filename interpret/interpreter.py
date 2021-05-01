@@ -2,34 +2,11 @@ from lex import token
 from parse import parser
 from typing import TypeVar, Union
 from interpret.context import *
+from interpret.number import *
 
 A = TypeVar('A')
 B = TypeVar('B')
 C = TypeVar('C')
-
-class Number():
-
-    def __init__(self, value : Union[int, float]):
-        self.value = value
-
-    def add(self, other : 'Number') -> 'Number':
-        return Number(self.value + other.value)
-
-    def sub(self, other : 'Number') -> 'Number':
-        return Number(self.value - other.value)
-
-    def mul(self, other : 'Number') -> 'Number':
-        return Number(self.value * other.value)
-
-    def div(self, other : 'Number') -> 'Number':
-        return Number(self.value / other.value)
-
-    def setLineNumber(self, number : int):
-        self.lineNumber = number
-
-    def __repr__(self) -> str:
-        return str(self.value)
-
 
 def visit(node : parser.Node, context : Context) -> Number:
     function_name = f'visit{type(node).__name__}'
@@ -48,6 +25,22 @@ def visitOperatorNode(node : parser.Node, context : Context) -> Number:
         result = left.mul(right)
     elif type(node.operator) == token.DivideToken:
         result = left.div(right)
+    elif type(node.operator) == token.EqualityToken:
+        result = left.eq(right)
+    elif type(node.operator) == token.NonEqualityToken:
+        result = left.ne(right)
+    elif type(node.operator) == token.LessToken:
+        result = left.lt(right)
+    elif type(node.operator) == token.GreaterToken:
+        result = left.gt(right)
+    elif type(node.operator) == token.LessEqualToken:
+        result = left.lte(right)
+    elif type(node.operator) == token.GreaterEqualToken:
+        result = left.gte(right)
+    elif type(node.operator) == token.AndToken:
+        result = left.anded_by(right)
+    elif type(node.operator) == token.OrToken:
+        result = left.ored_by(right)
     
     # result.setLineNumber(node.token.lineNumber)
     return result

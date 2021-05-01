@@ -24,6 +24,14 @@ def term(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, res = binaryOperator(tokenList, factor, (token.MultiplyToken, token.DivideToken), tokenIndex)
     return tokenIndex, res
 
+def comp(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
+    tokenIndex, res = binaryOperator(tokenList, arith_expr, (token.EqualityToken, token.NonEqualityToken, token.LessToken, token.GreaterToken, token.LessEqualToken, token.GreaterEqualToken), tokenIndex)
+    return tokenIndex, res
+
+def arith_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
+    tokenIndex, res = binaryOperator(tokenList, term, (token.AddToken, token.SubstractToken), tokenIndex)
+    return tokenIndex, res
+
 def expression(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     currentToken = tokenList[tokenIndex]
 
@@ -37,7 +45,7 @@ def expression(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
         expr = expression(tokenList, tokenIndex)
         return tokenIndex, VariableNode(variableName, expr)
     
-    return binaryOperator(tokenList, term, (token.AddToken, token.SubstractToken), tokenIndex)
+    return binaryOperator(tokenList, comp, (token.AndToken, token.OrToken), tokenIndex)
 
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, left = f(tokenList, tokenIndex)

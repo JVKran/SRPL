@@ -70,6 +70,12 @@ class LessToken(Token):
 class LessEqualToken(Token):
     name = "is_less_than_or_equal_to"
 
+class AndToken(Token):
+    name = "and"
+
+class OrToken(Token):
+    name = "or"
+
 class ReturnToken(Token):
     name = "flush"
 
