@@ -76,6 +76,12 @@ class AndToken(Token):
 class OrToken(Token):
     name = "or"
 
+class IfToken(Token):
+    name = "if"
+
+class ThenToken(Token):
+    name = "then"
+
 class ReturnToken(Token):
     name = "flush"
 

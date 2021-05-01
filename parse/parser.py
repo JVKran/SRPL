@@ -42,10 +42,22 @@ def expression(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         assert(type(tokenList[tokenIndex]) == token.AssignmentToken)
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-        expr = expression(tokenList, tokenIndex)
+        tokenIndex, expr = expression(tokenList, tokenIndex)
         return tokenIndex, VariableNode(variableName, expr)
+    elif type(currentToken) == token.IfToken:
+        tokenIndex, expr = if_expr(tokenList, tokenIndex)
+        return tokenIndex, expr
     
     return binaryOperator(tokenList, comp, (token.AndToken, token.OrToken), tokenIndex)
+
+def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
+    assert(type(tokenList[tokenIndex]) == token.IfToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex, condition = expression(tokenList, tokenIndex)
+    assert(type(tokenList[tokenIndex]) == token.ThenToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex, expr = expression(tokenList, tokenIndex)
+    return tokenIndex, IfNode(condition, expr)
 
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, left = f(tokenList, tokenIndex)

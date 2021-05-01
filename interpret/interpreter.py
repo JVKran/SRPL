@@ -56,6 +56,14 @@ def visitVariableNode(node : parser.Node, context : Context):
         value = context.get_symbol(variableName)
     else:
         variableName = node.var_name
-        value = visit(node.value[1], context)
+        value = visit(node.value, context)
         context.add_symbol(variableName, value)
     return value
+
+def visitIfNode(node, context):
+    conditionResult = visit(node.condition, context)
+    if conditionResult:
+        expressionResult = visit(node.expression, context)
+        return expressionResult
+    return None
+

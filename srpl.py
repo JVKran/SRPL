@@ -29,7 +29,7 @@ def shell():
             print("\tAST:", ast)
 
             result = visit(ast, context)
-            print("\t" + str(result))
+            if result: print("\t" + str(result))
     except KeyboardInterrupt:
         return
 

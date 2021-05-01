@@ -44,5 +44,8 @@ class Number():
     def setLineNumber(self, number : int):
         self.lineNumber = number
 
+    def __bool__(self):
+        return self.value != 0
+
     def __repr__(self) -> str:
         return str(self.value)

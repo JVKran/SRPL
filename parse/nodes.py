@@ -32,4 +32,9 @@ class OperatorNode():
     def __repr__(self):
         return f'({self.left_node}, {self.operator}, {self.right_node})'
 
-Node = Union[FunctionNode, NumberNode, OperatorNode, VariableNode]
+class IfNode():
+    def __init__(self, condition, expression):
+        self.condition = condition
+        self.expression = expression
+
+Node = Union[FunctionNode, NumberNode, OperatorNode, VariableNode,IfNode]
