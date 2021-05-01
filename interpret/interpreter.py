@@ -67,3 +67,9 @@ def visitIfNode(node, context):
         return expressionResult
     return None
 
+def visitWhileNode(node, context):
+    condition = visit(node.condition, context)
+    while condition:
+        visit(node.codeSequence, context)
+        condition = visit(node.condition, context)
+    return None

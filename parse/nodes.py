@@ -37,4 +37,9 @@ class IfNode():
         self.condition = condition
         self.expression = expression
 
+class WhileNode():
+    def __init__(self, condition, codeSequence):
+        self.condition = condition
+        self.codeSequence = codeSequence
+
 Node = Union[FunctionNode, NumberNode, OperatorNode, VariableNode,IfNode]

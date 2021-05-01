@@ -82,6 +82,9 @@ class IfToken(Token):
 class ThenToken(Token):
     name = "then"
 
+class WhileToken(Token):
+    name = "while"
+
 class ReturnToken(Token):
     name = "flush"
 

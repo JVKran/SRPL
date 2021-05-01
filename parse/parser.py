@@ -47,6 +47,9 @@ def expression(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
     elif type(currentToken) == token.IfToken:
         tokenIndex, expr = if_expr(tokenList, tokenIndex)
         return tokenIndex, expr
+    elif type(currentToken) == token.WhileToken:
+        tokenIndex, expr = while_expr(tokenList, tokenIndex)
+        return tokenIndex, expr
     
     return binaryOperator(tokenList, comp, (token.AndToken, token.OrToken), tokenIndex)
 
@@ -58,6 +61,16 @@ def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
     tokenIndex, expr = expression(tokenList, tokenIndex)
     return tokenIndex, IfNode(condition, expr)
+
+def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
+    assert(type(tokenList[tokenIndex]) == token.WhileToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex, condition = expression(tokenList, tokenIndex)
+    print(type(tokenList[tokenIndex]))
+    assert(type(tokenList[tokenIndex]) == token.ThenToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex, codeSequence = expression(tokenList, tokenIndex)
+    return tokenIndex, WhileNode(condition, codeSequence)
 
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, left = f(tokenList, tokenIndex)
