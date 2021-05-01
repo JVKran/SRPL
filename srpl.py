@@ -10,19 +10,25 @@ def file():
     ast = parser.parse(tokens)
     print("AST:", ast)
 
+    result = interpreter.visit(ast)
+    print(str(result))
+
 def shell():
-    while True:
-        text = input("SRPL > ")
-        if text == "exit": exit()
+    try:
+        while True:
+            text = input("SRPL > ")
+            if text == "exit": exit()
 
-        tokens = lexer.lex([text], None)
-        print("\tTOKENS:", tokens)
+            tokens = lexer.lex([text], None)
+            print("\tTOKENS:", tokens)
 
-        ast = parser.parse(tokens)
-        print("\tAST:", ast)
+            ast = parser.parse(tokens)
+            print("\tAST:", ast)
 
-        result = interpreter.visit(ast)
-        print("\t" + str(result))
+            result = interpreter.visit(ast)
+            print("\t" + str(result))
+    except KeyboardInterrupt:
+        return
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
