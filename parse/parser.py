@@ -50,7 +50,13 @@ def expression(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
     elif type(currentToken) == token.WhileToken:
         tokenIndex, expr = while_expr(tokenList, tokenIndex)
         return tokenIndex, expr
-    
+    elif type(currentToken) == token.FunctionToken:
+        tokenIndex, expr = func_def(tokenList, tokenIndex)
+        return tokenIndex, expr
+    elif type(currentToken) == token.ExecuteToken:
+        tokenIndex, expr = call(tokenList, tokenIndex)
+        return tokenIndex, expr
+
     return binaryOperator(tokenList, comp, (token.AndToken, token.OrToken), tokenIndex)
 
 def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
@@ -66,11 +72,57 @@ def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
     assert(type(tokenList[tokenIndex]) == token.WhileToken)
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
     tokenIndex, condition = expression(tokenList, tokenIndex)
-    print(type(tokenList[tokenIndex]))
     assert(type(tokenList[tokenIndex]) == token.ThenToken)
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
     tokenIndex, codeSequence = expression(tokenList, tokenIndex)
     return tokenIndex, WhileNode(condition, codeSequence)
+
+def call(tokenList, tokenIndex) -> Tuple[int, Node]:
+    assert(type(tokenList[tokenIndex]) == token.ExecuteToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex, expr = expression(tokenList, tokenIndex)
+    if type(tokenList[tokenIndex]) == token.LeftParenToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        arguments = []
+        if type(tokenList[tokenIndex]) == token.RightParenToken:
+            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        else:
+            tokenIndex, intExpr = expression(tokenList, tokenIndex)
+            arguments.append(intExpr)
+            # tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+
+            while type(tokenList[tokenIndex]) == token.CommaToken:
+                tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+                tokenIndex, intExpr = expression(tokenList, tokenIndex)
+                arguments.append(intExpr)
+            
+            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+            assert(type(tokenList[tokenIndex]) == token.RightParenToken)
+        return tokenIndex, CallNode(expr, arguments)
+    return tokenIndex, expr
+
+
+def func_def(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
+    assert(type(tokenList[tokenIndex]) == token.FunctionToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    functionName = tokenList[tokenIndex].stringToParse
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+
+    arguments = []
+    if type(tokenList[tokenIndex]) == token.VariableToken:
+        arguments.append(tokenList[tokenIndex].stringToParse)
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+
+        while type(tokenList[tokenIndex]) == token.CommaToken:
+            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+            arguments.append(tokenList[tokenIndex].stringToParse)
+            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+
+    assert(type(tokenList[tokenIndex]) == token.FunctionStartToken)
+    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+
+    tokenIndex, expr = expression(tokenList, tokenIndex)
+    return tokenIndex, FunctionNode(functionName, arguments, expr)
 
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, left = f(tokenList, tokenIndex)

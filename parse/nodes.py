@@ -2,11 +2,15 @@ from lex import token
 from typing import List, Union
 
 class FunctionNode():
-    def __init__(self, name : str, returnType : str, arguments : List[token.Token]):
+    def __init__(self, name : str, arguments : List[token.Token], codeSequence):
         self.name = name
-        self.returnType = returnType
         self.arguments = arguments
-        self.codeSequence = []
+        self.codeSequence = codeSequence
+
+class CallNode:
+	def __init__(self, node_to_call, arg_nodes):
+		self.node_to_call = node_to_call
+		self.arg_nodes = arg_nodes
 
 class NumberNode():
     def __init__(self, token : token.Token):
@@ -42,4 +46,4 @@ class WhileNode():
         self.condition = condition
         self.codeSequence = codeSequence
 
-Node = Union[FunctionNode, NumberNode, OperatorNode, VariableNode,IfNode]
+Node = Union[FunctionNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode]

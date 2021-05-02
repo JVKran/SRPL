@@ -97,8 +97,20 @@ class VariableKeywordToken(Token):
 class FunctionToken(Token):
     name = "task"
 
+class ExecuteToken(Token):
+    name = "execute"
+
 class FunctionStartToken(Token):
     name = "consists_of"
+
+class CommaToken(Token):
+    name = ","
+
+class LeftParenToken(Token):
+    name = "("
+
+class RightParenToken(Token):
+    name = ")"
 
 class IntegerToken(Token):
     name = ""

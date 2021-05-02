@@ -3,6 +3,7 @@ from parse import parser
 from typing import TypeVar, Union
 from interpret.context import *
 from interpret.number import *
+from interpret.function import *
 
 A = TypeVar('A')
 B = TypeVar('B')
@@ -73,3 +74,22 @@ def visitWhileNode(node, context):
         visit(node.codeSequence, context)
         condition = visit(node.condition, context)
     return None
+
+def visitFunctionNode(node, context):
+    name = node.name
+    codeSequence = node.codeSequence
+    argumentNames = [arg_name for arg_name in node.arguments]
+    functionValue = Function(name, codeSequence, argumentNames, context)
+    context.add_symbol(name, functionValue)
+    return functionValue
+
+
+def visitCallNode(node, context):
+    args = []
+    value_to_call = visit(node.node_to_call, context)
+
+    for arg_node in node.arg_nodes:
+        args.append(visit(arg_node, context))
+
+    returnValue = value_to_call.execute(args, context)
+    return returnValue
