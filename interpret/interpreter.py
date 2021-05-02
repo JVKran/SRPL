@@ -1,3 +1,4 @@
+from parse.nodes import ReturnNode
 from lex import token
 from parse import parser
 from typing import TypeVar, Union
@@ -10,38 +11,16 @@ B = TypeVar('B')
 C = TypeVar('C')
 
 def visit(node : parser.Node, context : Context) -> Number:
-    function_name = f'visit{type(node).__name__}'
-    function = globals()[function_name]
+    functionName = f'visit{type(node).__name__}'
+    function = globals()[functionName]
     return function(node, context)
 
 def visitOperatorNode(node : parser.Node, context : Context) -> Number:
     left = visit(node.left_node, context)
     right = visit(node.right_node, context)
-
-    if type(node.operator) == token.AddToken:
-        result = left.add(right)
-    elif type(node.operator) == token.SubstractToken:
-        result = left.sub(right)
-    elif type(node.operator) == token.MultiplyToken:
-        result = left.mul(right)
-    elif type(node.operator) == token.DivideToken:
-        result = left.div(right)
-    elif type(node.operator) == token.EqualityToken:
-        result = left.eq(right)
-    elif type(node.operator) == token.NonEqualityToken:
-        result = left.ne(right)
-    elif type(node.operator) == token.LessToken:
-        result = left.lt(right)
-    elif type(node.operator) == token.GreaterToken:
-        result = left.gt(right)
-    elif type(node.operator) == token.LessEqualToken:
-        result = left.lte(right)
-    elif type(node.operator) == token.GreaterEqualToken:
-        result = left.gte(right)
-    elif type(node.operator) == token.AndToken:
-        result = left.anded_by(right)
-    elif type(node.operator) == token.OrToken:
-        result = left.ored_by(right)
+    methodName = f'{type(node.operator).__name__}'.replace("Token", '')
+    method = getattr(left, methodName)
+    result = method(right)
     
     # result.setLineNumber(node.token.lineNumber)
     return result
@@ -83,7 +62,6 @@ def visitFunctionNode(node, context):
     context.add_symbol(name, functionValue)
     return functionValue
 
-
 def visitCallNode(node, context):
     args = []
     value_to_call = visit(node.node_to_call, context)
@@ -97,9 +75,20 @@ def visitCallNode(node, context):
 def visitListNode(node, context):
     elements = []
 
+    return_present = False
     for element_node in node.element_nodes:
-      elements.append(visit(element_node, context))
+        return_present |= ReturnNode == type(element_node)
 
+    for element_node in node.element_nodes:
+        if not return_present:
+            elements.append(visit(element_node, context))
+        elif type(element_node) == ReturnNode:
+            elements.append(visit(element_node, context))
+        else:
+            visit(element_node, context)
+    
+    if len(elements) == 1:
+        return elements[0]
     return elements
 
 def visitReturnNode(node, context):
@@ -108,4 +97,3 @@ def visitReturnNode(node, context):
         return value
     else:
         return None
-    

@@ -67,8 +67,8 @@ def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
     if type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-        tokenIndex, statements = statements(tokenList, tokenIndex)
-        return tokenIndex, IfNode(condition, statements)
+        tokenIndex, stateMent = statements(tokenList, tokenIndex)
+        return tokenIndex, IfNode(condition, stateMent)
     else:
         tokenIndex, expr = expression(tokenList, tokenIndex)
         return tokenIndex, IfNode(condition, expr)
@@ -81,8 +81,8 @@ def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
     if type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-        tokenIndex, statements = statements(tokenList, tokenIndex)
-        return tokenIndex, WhileNode(condition, statements)
+        tokenIndex, stateMents = statements(tokenList, tokenIndex)
+        return tokenIndex, WhileNode(condition, stateMents)
     else:
         tokenIndex, expr = expression(tokenList, tokenIndex)
         return tokenIndex, WhileNode(condition, expr)

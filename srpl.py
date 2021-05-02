@@ -1,38 +1,34 @@
-from lex import token, lexer
-from parse import parser
+from lex.lexer import lex
+from parse.parser import parse
 from interpret.interpreter import *
 from interpret.context import *
 import sys
 
-def file():
-    tokens = lexer.lex(None, sys.argv[1])
-    print(tokens)
-    ast = parser.parse(tokens)
-    context = Context("<main>")
+def file(context : Context):
+    tokens = lex(None, sys.argv[1])
+    ast = parse(tokens)
     result = visit(ast, context)
     
     print(str(result))
 
-def shell():
-    try:
-        context = Context("<main>")
-        while True:
-            text = input("SRPL >  ")
-            if text == "exit": exit()
-            if text == "": continue
+def shell(context : Context):
+    while True:
+        text = input("SRPL  > ")
+        if text == "exit": exit(0)
+        if text == "": continue
 
-            tokens = lexer.lex([text], None)
-            ast = parser.parse(tokens)
-            print(ast)
-            result = visit(ast, context)
+        tokens = lex([text], None)
+        ast = parse(tokens)
+        result = visit(ast, context)
 
-            if len(result) > 1: print("\t" + str(result))
-            else: print("\t" + str(result[0]))
-    except KeyboardInterrupt:
-        return
+        print("\t" + str(result))
 
 if __name__ == '__main__':
+    context = Context("<main>")
     if len(sys.argv) == 2:
-        file()
+        file(context)
     else:
-        shell()
+        try:
+            shell(context)
+        except KeyboardInterrupt:
+            exit(0)

@@ -1,6 +1,4 @@
 variable result is 6 plus 5 multiplied_by 2 ;
 variable otherResult is result multiplied_by 4 ;
-task add lhs , rhs consists_of ;
-variable res is lhs plus rhs ;
-flush res ;
-variable sum is execute add ( result , otherResult )
+variable i is 1 ;
+while i is_less_than 5 then variable i is i plus 1 ;

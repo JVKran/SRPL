@@ -5,40 +5,40 @@ class Number():
     def __init__(self, value : Union[int, float]):
         self.value = value
 
-    def add(self, other : 'Number') -> 'Number':
+    def Add(self, other : 'Number') -> 'Number':
         return Number(self.value + other.value)
 
-    def sub(self, other : 'Number') -> 'Number':
+    def Substract(self, other : 'Number') -> 'Number':
         return Number(self.value - other.value)
 
-    def mul(self, other : 'Number') -> 'Number':
+    def Multiply(self, other : 'Number') -> 'Number':
         return Number(self.value * other.value)
 
-    def div(self, other : 'Number') -> 'Number':
+    def Divide(self, other : 'Number') -> 'Number':
         return Number(self.value / other.value)
 
-    def eq(self, other : 'Number') -> 'Number':
+    def Equality(self, other : 'Number') -> 'Number':
         return Number(int(self.value == other.value))
     
-    def ne(self, other : 'Number') -> 'Number':
+    def NonEquality(self, other : 'Number') -> 'Number':
         return Number(int(self.value != other.value))
 
-    def lt(self, other : 'Number') -> 'Number':
+    def Less(self, other : 'Number') -> 'Number':
         return Number(int(self.value < other.value))
 
-    def gt(self, other : 'Number') -> 'Number':
+    def Greater(self, other : 'Number') -> 'Number':
         return Number(int(self.value > other.value))
 
-    def lte(self, other : 'Number') -> 'Number':
+    def LessEqual(self, other : 'Number') -> 'Number':
         return Number(int(self.value <= other.value))
 
-    def gte(self, other : 'Number') -> 'Number':
+    def GreaterEqual(self, other : 'Number') -> 'Number':
         return Number(int(self.value >= other.value))
 
-    def anded_by(self, other : 'Number') -> 'Number':
+    def And(self, other : 'Number') -> 'Number':
         return Number(int(self.value and other.value))
 
-    def ored_by(self, other : 'Number') -> 'Number':
+    def Or(self, other : 'Number') -> 'Number':
         return Number(int(self.value or other.value))
 
     def setLineNumber(self, number : int):
