@@ -144,8 +144,8 @@ def statements(tokenList : List[token.Token], tokenIndex : int):
     while type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
 
-    tokenIndex, statement = expression(tokenList, tokenIndex)
-    statements.append(statement)
+    tokenIndex, stateMent = statement(tokenList, tokenIndex)
+    statements.append(stateMent)
 
     more_statements = True
 
@@ -160,11 +160,21 @@ def statements(tokenList : List[token.Token], tokenIndex : int):
 
         if not more_statements: break
         lastTokenIndex = tokenIndex
-        tokenIndex, statement = expression(tokenList, tokenIndex)
+        tokenIndex, stateMent = statement(tokenList, tokenIndex)
         more_statements = not (lastTokenIndex == tokenIndex)
-        statements.append(statement)
+        statements.append(stateMent)
 
     return tokenIndex, ListNode(statements)
+
+def statement(tokenList, tokenIndex):
+    if type(tokenList[tokenIndex]) == token.ReturnToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex, expr = expression(tokenList, tokenIndex)
+        return tokenIndex, ReturnNode(expr)
+    else:
+        tokenIndex, expr = expression(tokenList, tokenIndex)
+        return tokenIndex, expr
+
 
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, left = f(tokenList, tokenIndex)

@@ -6,6 +6,7 @@ import sys
 
 def file():
     tokens = lexer.lex(None, sys.argv[1])
+    print(tokens)
     ast = parser.parse(tokens)
     context = Context("<main>")
     result = visit(ast, context)
@@ -22,6 +23,7 @@ def shell():
 
             tokens = lexer.lex([text], None)
             ast = parser.parse(tokens)
+            print(ast)
             result = visit(ast, context)
 
             if len(result) > 1: print("\t" + str(result))

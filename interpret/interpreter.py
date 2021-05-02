@@ -101,3 +101,11 @@ def visitListNode(node, context):
       elements.append(visit(element_node, context))
 
     return elements
+
+def visitReturnNode(node, context):
+    if node.nodeToReturn:
+        value = visit(node.nodeToReturn, context)
+        return value
+    else:
+        return None
+    

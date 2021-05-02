@@ -10,7 +10,7 @@ def createWordList(line : str) -> List[str]:
         return [""]
     head, *tail = line
     currentWordList = createWordList(tail)
-    if head in " \t\n\r":
+    if head in " \t\r":
         currentWordList = [""] + currentWordList
     else:
         newWord = head + currentWordList[0]

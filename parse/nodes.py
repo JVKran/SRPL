@@ -7,10 +7,14 @@ class FunctionNode():
         self.arguments = arguments
         self.codeSequence = codeSequence
 
-class CallNode:
+class CallNode():
 	def __init__(self, node_to_call, arg_nodes):
 		self.node_to_call = node_to_call
 		self.arg_nodes = arg_nodes
+
+class ReturnNode():
+    def __init__(self, nodeToReturn):
+        self.nodeToReturn = nodeToReturn
 
 class ListNode():
   def __init__(self, element_nodes):
@@ -50,4 +54,4 @@ class WhileNode():
         self.condition = condition
         self.codeSequence = codeSequence
 
-Node = Union[FunctionNode, CallNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode, ListNode]
+Node = Union[FunctionNode, CallNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode, ListNode, ReturnNode]
