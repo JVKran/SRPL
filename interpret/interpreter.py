@@ -93,3 +93,11 @@ def visitCallNode(node, context):
 
     returnValue = value_to_call.execute(args, context)
     return returnValue
+
+def visitListNode(node, context):
+    elements = []
+
+    for element_node in node.element_nodes:
+      elements.append(visit(element_node, context))
+
+    return elements

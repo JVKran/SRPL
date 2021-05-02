@@ -103,6 +103,15 @@ class ExecuteToken(Token):
 class FunctionStartToken(Token):
     name = "consists_of"
 
+class NewlineToken(Token):
+    name = "\n"
+
+class NewlineToken(Token):
+    name = ";"
+
+class FunctionEndToken(Token):
+    name = "end"
+
 class CommaToken(Token):
     name = ","
 

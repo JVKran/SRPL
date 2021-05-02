@@ -12,6 +12,10 @@ class CallNode:
 		self.node_to_call = node_to_call
 		self.arg_nodes = arg_nodes
 
+class ListNode():
+  def __init__(self, element_nodes):
+    self.element_nodes = element_nodes
+
 class NumberNode():
     def __init__(self, token : token.Token):
         self.token = token
@@ -46,4 +50,4 @@ class WhileNode():
         self.condition = condition
         self.codeSequence = codeSequence
 
-Node = Union[FunctionNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode]
+Node = Union[FunctionNode, CallNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode, ListNode]

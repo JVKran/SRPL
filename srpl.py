@@ -6,13 +6,10 @@ import sys
 
 def file():
     tokens = lexer.lex(None, sys.argv[1])
-    print("TOKENS:", tokens)
-
     ast = parser.parse(tokens)
-    print("AST:", ast)
-
     context = Context("<main>")
     result = visit(ast, context)
+    
     print(str(result))
 
 def shell():
@@ -21,15 +18,14 @@ def shell():
         while True:
             text = input("SRPL > ")
             if text == "exit": exit()
+            if text == "": continue
 
             tokens = lexer.lex([text], None)
-            print("\tTOKENS:", tokens)
-
             ast = parser.parse(tokens)
-            print("\tAST:", ast)
-
             result = visit(ast, context)
-            if result: print("\t" + str(result))
+
+            if len(result) > 1: print("\t" + str(result))
+            else: print("\t" + str(result[0]))
     except KeyboardInterrupt:
         return
 

@@ -124,6 +124,34 @@ def func_def(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node
     tokenIndex, expr = expression(tokenList, tokenIndex)
     return tokenIndex, FunctionNode(functionName, arguments, expr)
 
+def statements(tokenList : List[token.Token], tokenIndex : int):
+    statements = []
+
+    while type(tokenList[tokenIndex]) == token.NewlineToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+
+    tokenIndex, statement = expression(tokenList, tokenIndex)
+    statements.append(statement)
+
+    more_statements = True
+
+    while True:
+        newline_count = 0
+        while type(tokenList[tokenIndex]) == token.NewlineToken:
+            lastTokenIndex = tokenIndex
+            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+            newline_count += 1
+        if newline_count == 0:
+            more_statements = False
+
+        if not more_statements: break
+        lastTokenIndex = tokenIndex
+        tokenIndex, statement = expression(tokenList, tokenIndex)
+        more_statements = not (lastTokenIndex == tokenIndex)
+        statements.append(statement)
+
+    return tokenIndex, ListNode(statements)
+
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex, left = f(tokenList, tokenIndex)
 
@@ -135,5 +163,5 @@ def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], opera
     return tokenIndex, left
 
 def parse(tokens: List[token.Token]) -> Node:
-    index, res = expression(tokens, 0)
+    index, res = statements(tokens, 0)
     return res
