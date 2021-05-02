@@ -16,7 +16,7 @@ def shell():
     try:
         context = Context("<main>")
         while True:
-            text = input("SRPL > ")
+            text = input("SRPL >  ")
             if text == "exit": exit()
             if text == "": continue
 

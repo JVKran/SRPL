@@ -65,8 +65,13 @@ def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]
     tokenIndex, condition = expression(tokenList, tokenIndex)
     assert(type(tokenList[tokenIndex]) == token.ThenToken)
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-    tokenIndex, expr = expression(tokenList, tokenIndex)
-    return tokenIndex, IfNode(condition, expr)
+    if type(tokenList[tokenIndex]) == token.NewlineToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex, statements = statements(tokenList, tokenIndex)
+        return tokenIndex, IfNode(condition, statements)
+    else:
+        tokenIndex, expr = expression(tokenList, tokenIndex)
+        return tokenIndex, IfNode(condition, expr)
 
 def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     assert(type(tokenList[tokenIndex]) == token.WhileToken)
@@ -74,8 +79,13 @@ def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
     tokenIndex, condition = expression(tokenList, tokenIndex)
     assert(type(tokenList[tokenIndex]) == token.ThenToken)
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-    tokenIndex, codeSequence = expression(tokenList, tokenIndex)
-    return tokenIndex, WhileNode(condition, codeSequence)
+    if type(tokenList[tokenIndex]) == token.NewlineToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex, statements = statements(tokenList, tokenIndex)
+        return tokenIndex, WhileNode(condition, statements)
+    else:
+        tokenIndex, expr = expression(tokenList, tokenIndex)
+        return tokenIndex, WhileNode(condition, expr)
 
 def call(tokenList, tokenIndex) -> Tuple[int, Node]:
     assert(type(tokenList[tokenIndex]) == token.ExecuteToken)
@@ -121,7 +131,11 @@ def func_def(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node
     assert(type(tokenList[tokenIndex]) == token.FunctionStartToken)
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
 
-    tokenIndex, expr = expression(tokenList, tokenIndex)
+    if type(tokenList[tokenIndex]) == token.NewlineToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex, expr = statements(tokenList, tokenIndex)
+    else:
+        tokenIndex, expr = expression(tokenList, tokenIndex)
     return tokenIndex, FunctionNode(functionName, arguments, expr)
 
 def statements(tokenList : List[token.Token], tokenIndex : int):
