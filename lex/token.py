@@ -82,6 +82,9 @@ class IfToken(Token):
 class ThenToken(Token):
     name = "then"
 
+class ElseToken(Token):
+    name = "else"
+
 class WhileToken(Token):
     name = "while"
 

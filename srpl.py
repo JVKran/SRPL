@@ -25,10 +25,11 @@ def shell(context : Context):
 
 if __name__ == '__main__':
     context = Context("<main>")
-    if len(sys.argv) == 2:
-        file(context)
-    else:
-        try:
+    try:
+        if len(sys.argv) == 2:
+            file(context)
+        else:
             shell(context)
-        except KeyboardInterrupt:
-            exit(0)
+    except KeyboardInterrupt:
+        print("Execution was interrupted!")
+        exit(0)

@@ -45,6 +45,11 @@ def visitIfNode(node, context):
     if conditionResult:
         expressionResult = visit(node.expression, context)
         return expressionResult
+
+    if node.elseExpression:
+        elseExpressionResult = visit(node.elseExpression, context)
+        return elseExpressionResult
+
     return None
 
 def visitWhileNode(node, context):

@@ -1,4 +1,6 @@
-variable result is 6 plus 5 multiplied_by 2 ;
-variable otherResult is result multiplied_by 4 ;
-variable i is 1 ;
-while i is_less_than 5 then variable i is i plus 1 ;
+task sommig n consists_of ; variable result is 0 ; while n is_greater_than_or_equal_to 1 then ; variable result is result plus n ; variable n is n min 1 ; flush result ;
+task odd n consists_of ; if n is_equal_to 0 then ; flush 0 else ; variable n is n min 1 ; execute even ( n ) ;
+task even n consists_of ; if n is_equal_to 0 then ; flush 1 else ; variable n is n min 1 ; execute odd ( n ) ;
+;
+;
+flush execute sommig ( 5 )

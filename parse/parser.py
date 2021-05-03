@@ -67,11 +67,18 @@ def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
     if type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-        tokenIndex, stateMent = statements(tokenList, tokenIndex)
-        return tokenIndex, IfNode(condition, stateMent)
+        tokenIndex, expr = statements(tokenList, tokenIndex)
     else:
         tokenIndex, expr = expression(tokenList, tokenIndex)
-        return tokenIndex, IfNode(condition, expr)
+    if type(tokenList[tokenIndex]) == token.ElseToken:
+        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        if type(tokenList[tokenIndex]) == token.NewlineToken:
+            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+            tokenIndex, elseExpr = statements(tokenList, tokenIndex)
+        else:
+            tokenIndex, elseExpr = expression(tokenList, tokenIndex)
+        return tokenIndex, IfNode(condition, expr, elseExpr)
+    return tokenIndex, IfNode(condition, expr)
 
 def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     assert(type(tokenList[tokenIndex]) == token.WhileToken)
@@ -99,14 +106,12 @@ def call(tokenList, tokenIndex) -> Tuple[int, Node]:
         else:
             tokenIndex, intExpr = expression(tokenList, tokenIndex)
             arguments.append(intExpr)
-            # tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
 
             while type(tokenList[tokenIndex]) == token.CommaToken:
                 tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
                 tokenIndex, intExpr = expression(tokenList, tokenIndex)
                 arguments.append(intExpr)
             
-            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
             assert(type(tokenList[tokenIndex]) == token.RightParenToken)
         return tokenIndex, CallNode(expr, arguments)
     return tokenIndex, expr

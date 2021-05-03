@@ -45,9 +45,10 @@ class OperatorNode():
         return f'({self.left_node}, {self.operator}, {self.right_node})'
 
 class IfNode():
-    def __init__(self, condition, expression):
+    def __init__(self, condition, expression, elseExpression = None):
         self.condition = condition
         self.expression = expression
+        self.elseExpression = elseExpression
 
 class WhileNode():
     def __init__(self, condition, codeSequence):
