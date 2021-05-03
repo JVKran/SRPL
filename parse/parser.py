@@ -163,12 +163,14 @@ def statements(tokenList : List[token.Token], tokenIndex : int):
         if newline_count == 0:
             more_statements = False
 
+
         if not more_statements: break
         lastTokenIndex = tokenIndex
         tokenIndex, stateMent = statement(tokenList, tokenIndex)
         more_statements = not (lastTokenIndex == tokenIndex)
         statements.append(stateMent)
 
+    print(tokenIndex)
     return tokenIndex, ListNode(statements)
 
 def statement(tokenList, tokenIndex):
@@ -192,5 +194,13 @@ def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], opera
     return tokenIndex, left
 
 def parse(tokens: List[token.Token]) -> Node:
-    index, res = statements(tokens, 0)
-    return res
+    index = -1
+    results = []
+    while True:
+        try:
+            index, res = statements(tokens, index + 1)
+            results.append(res)
+        except:
+            break
+    print("TokenIndex at end was", index)
+    return results
