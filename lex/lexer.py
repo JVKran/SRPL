@@ -19,7 +19,7 @@ def createWordList(line : str) -> List[str]:
 
 def readFile(filename : str) -> List[str]:
     file = open(filename, "r")
-    text = file.read().splitlines()     # Pass True to keep newline characters.
+    text = file.read().splitlines(True)     # Pass True to keep newline characters.
     file.close()
     return text
 
@@ -36,13 +36,11 @@ def lineToTokens(line : str, lineNumber : int) -> List[token.Token]:
     wordList = list(filter(lambda x: x != "", wordList))
     lineList = [lineNumber] * len(line)
     wordList = list(zip(wordList, lineList))
-    print(wordList)
     tokenList = list(map(wordToToken, wordList))
     return tokenList
 
 def lex(text : str, fileName : str) -> List[token.Token]:
     if text == None:
         text = readFile(fileName)
-    print(text)
     tokenList = textToTokens(lineToTokens, text)
     return tokenList

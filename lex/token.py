@@ -14,6 +14,8 @@ class Token():
                 subclass = FloatToken
             else:
                 subclass = IntegerToken
+        elif stringToParse == '\n':
+            subclass = NewlineToken
         else:
             try:
                 subclass = subclassDict[stringToParse]
@@ -100,11 +102,17 @@ class VariableKeywordToken(Token):
 class FunctionToken(Token):
     name = "task"
 
+class FunctionParameterToken(Token):
+    name = "with"
+
 class ExecuteToken(Token):
     name = "execute"
 
+class NowToken(Token):
+    name = "now"
+
 class FunctionStartToken(Token):
-    name = "consists_of"
+    name = "contains"
 
 class NewlineToken(Token):
     name = "\n"
@@ -116,7 +124,7 @@ class FunctionEndToken(Token):
     name = "end"
 
 class CommaToken(Token):
-    name = ","
+    name = "&"
 
 class LeftParenToken(Token):
     name = "("

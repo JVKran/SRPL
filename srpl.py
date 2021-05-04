@@ -7,10 +7,8 @@ import sys
 def file(context : Context):
     tokens = lex(None, sys.argv[1])
     ast = parse(tokens)
-    for root_node in ast:
-        result = visit(root_node, context)
-        print(str(result))
-    
+    result = visit(ast, context)
+    print(str(result))
 
 def shell(context : Context):
     while True:

@@ -71,8 +71,9 @@ def visitCallNode(node, context):
     args = []
     value_to_call = visit(node.node_to_call, context)
 
-    for arg_node in node.arg_nodes:
-        args.append(visit(arg_node, context))
+    if node.arg_nodes != None:
+        for arg_node in node.arg_nodes:
+            args.append(visit(arg_node, context))
 
     returnValue = value_to_call.execute(args, context)
     return returnValue

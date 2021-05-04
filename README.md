@@ -22,20 +22,24 @@ Litteraly everybody working in IT has at least touched code once and is *at leas
 | Less than or equal    | less_than_or_equal_to     |
 
 ## Example
-``` KRAN++
-when 6 less than or equal to  5 or 8 greater than or equal to 6 {
-	flush 8]
-} else {
-	flush 4]
-}
+``` SRPL
+task add with a and b contains ; flush a plus b end
+execute add with 3 & 5 now
 
-val is 5 plus 4]				<!-- Comment --!>
-next is val min 6]
-prev is next div val]
-res is prev mul val]
+variable i is 1
+while i is_less_than 5 then ; variable i is i plus 1 end ; flush i
 
-ok is next is equal to prev]				<!-- Ok contains wether next is equal to previous --!>
-not_ok is next is not equal to prev]
+variable result is if 5 is_equal_to 3 then ; 2 else 4 end
 
-log 5 plus 5 plus next]			<!-- Print 5 + 5 + next --!>
+task equalThree with n contains ; if n is_equal_to 3 then ; flush 3 else 0 end end
+execute equalThree with 3 now
+
+task odd with n contains ; if n is_equal_to 0 then ; flush 0 else ; variable n is n min 1 end ; flush execute even with n now end ;
+
+task odd with n contains ; flush if n is_equal_to 0 then ; 0 else execute even with n min 1 now end end 
+task even with n contains ; flush if n is_equal_to 0 then ; 1 else execute odd with n min 1 now end end
+execute even with 2 now
+
+task sommig with n contains ; variable result is 0 ; while n is_greater_than_or_equal_to 1 then ; variable result is result plus n ; variable n is n min 1 end ; flush result end
+execute sommig with 5 now
 ```

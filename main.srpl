@@ -1,34 +1,32 @@
-task odd n consists_of ;
-	if n is_equal_to 0 then ;
-		flush 0 else ;
-	variable n is n min 1 ;
-	flush execute even ( n ) ;
+task add with a and b contains 
+	flush a plus b end 
+	variable result is execute add with 3 & 5 now 
+	flush result 
 
-task even n consists_of ;
-	if n is_equal_to 0 then ;
-		flush 1 else ;
-	variable n is n min 1 ;
-	flush execute odd ( n ) ;
+variable i is 1 
+while i is_less_than 5 then 
+	variable i is i plus 1 end 
+flush i 
 
-variable evenVariable is 2 ;
+task odd with n contains 
+	flush if n is_equal_to 0 then 
+	0 else execute even with n min 1 now end end 
 
-variable oddVariable is 3 ;
+task even with n contains 
+	flush if n is_equal_to 0 then 
+	1 else execute odd with n min 1 now end end 
 
-execute odd ( evenVariable ) ;
+flush execute even with 4 now 
+flush execute odd with 100 now 
+flush execute even with 3 now 
+flush execute odd with 3 now 
 
-execute odd ( oddVariable ) ;
+task sommig with n contains 
+	variable result is 0 
+	while n is_greater_than_or_equal_to 1 then 
+		variable result is result plus n 
+		variable n is n min 1 end 
+	flush result end 
 
-execute even ( evenVariable ) ;
-
-execute even ( oddVariable ) ;
-
-task sommig n consists_of ;
-	variable result is 0 ;
-	while n is_greater_than_or_equal_to 1 then ;
-		variable result is result plus n ;
-		variable n is n min 1 ;
-	flush result
-
-flush execute sommig ( 20 ) ;
-
-flush result
+flush execute sommig with 5 now 
+flush execute sommig with 34 now 
