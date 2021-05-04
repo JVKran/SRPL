@@ -1,6 +1,7 @@
 from lex import token
 from parse.nodes import *
 from typing import *
+from parse.error import *
 
 A = TypeVar('A')
 B = TypeVar('B')
@@ -48,11 +49,9 @@ def expression(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, No
     return tokenIndex, node
 
 def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
-    assert(type(tokenList[tokenIndex]) == token.IfToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.IfToken)
     tokenIndex, condition = expression(tokenList, tokenIndex)
-    assert(type(tokenList[tokenIndex]) == token.ThenToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.ThenToken)
     if type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         tokenIndex, expr = statements(tokenList, tokenIndex)
@@ -65,38 +64,31 @@ def if_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]
             tokenIndex, elseExpr = statements(tokenList, tokenIndex)
         else:
             tokenIndex, elseExpr = expression(tokenList, tokenIndex)
-        assert(type(tokenList[tokenIndex]) == token.FunctionEndToken)
-        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex = increment(tokenIndex, tokenList, token.FunctionEndToken)
         return tokenIndex, IfNode(condition, expr, elseExpr)
-    assert(type(tokenList[tokenIndex]) == token.FunctionEndToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.FunctionEndToken)
     return tokenIndex, IfNode(condition, expr)
 
 def while_expr(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
-    assert(type(tokenList[tokenIndex]) == token.WhileToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.WhileToken)
     tokenIndex, condition = expression(tokenList, tokenIndex)
-    assert(type(tokenList[tokenIndex]) == token.ThenToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.ThenToken)
     if type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         tokenIndex, stateMents = statements(tokenList, tokenIndex)
-        assert(type(tokenList[tokenIndex]) == token.FunctionEndToken)
-        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex = increment(tokenIndex, tokenList, token.FunctionEndToken)
         return tokenIndex, WhileNode(condition, stateMents)
     else:
         tokenIndex, expr = expression(tokenList, tokenIndex)
-        assert(type(tokenList[tokenIndex]) == token.FunctionEndToken)
-        tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+        tokenIndex = increment(tokenIndex, tokenList, token.FunctionEndToken)
         return tokenIndex, WhileNode(condition, expr)
 
 def variable(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-    assert(type(tokenList[tokenIndex]) == token.VariableToken)
+    increment(tokenIndex, tokenList, token.VariableToken)
     variableName = tokenList[tokenIndex].stringToParse
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
-    assert(type(tokenList[tokenIndex]) == token.AssignmentToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.AssignmentToken)
     tokenIndex, expr = expression(tokenList, tokenIndex)
     return tokenIndex, VariableNode(variableName, expr)
 
@@ -110,8 +102,7 @@ def call(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
         arguments.append(intExpr)
         return parseArguments(tokenIndex, tokenList, arguments)
 
-    assert(type(tokenList[tokenIndex]) == token.ExecuteToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.ExecuteToken)
     tokenIndex, expr = expression(tokenList, tokenIndex)
     if type(tokenList[tokenIndex]) == token.FunctionParameterToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
@@ -123,8 +114,7 @@ def call(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
             arguments.append(intExpr)
             tokenIndex, arguments = parseArguments(tokenIndex, tokenList, arguments)
             
-            assert(type(tokenList[tokenIndex]) == token.NowToken)
-            tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+            tokenIndex = increment(tokenIndex, tokenList, token.NowToken)
         return tokenIndex, CallNode(expr, arguments)
     else:
         if type(tokenList[tokenIndex]) == token.NowToken:
@@ -141,8 +131,7 @@ def func_def(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         return parseArguments(tokenIndex, tokenList, arguments)
 
-    assert(type(tokenList[tokenIndex]) == token.FunctionToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.FunctionToken)
     functionName = tokenList[tokenIndex].stringToParse
     tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
 
@@ -154,16 +143,14 @@ def func_def(tokenList : List[token.Token], tokenIndex : int) -> Tuple[int, Node
             tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
             tokenIndex, arguments = parseArguments(tokenIndex, tokenList, arguments)
 
-    assert(type(tokenList[tokenIndex]) == token.FunctionStartToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.FunctionStartToken)
 
     if type(tokenList[tokenIndex]) == token.NewlineToken:
         tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
         tokenIndex, expr = statements(tokenList, tokenIndex)
     else:
         tokenIndex, expr = expression(tokenList, tokenIndex)
-    assert(type(tokenList[tokenIndex]) == token.FunctionEndToken)
-    tokenIndex = incrementTokenIndex(tokenIndex, len(tokenList))
+    tokenIndex = increment(tokenIndex, tokenList, token.FunctionEndToken)
     return tokenIndex, FunctionNode(functionName, arguments, expr)
 
 def statements(tokenList : List[token.Token], tokenIndex : int, statings = None):
@@ -197,7 +184,11 @@ def statement(tokenList, tokenIndex):
         return tokenIndex, expr
 
 def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], operations : List[token.Token], tokenIndex : int) -> Tuple[int, Node]:
-    tokenIndex, left = f(tokenList, tokenIndex)
+    try:
+        tokenIndex, left = f(tokenList, tokenIndex)
+    except TypeError:
+        print("Expected expression at line " + str(tokenList[tokenIndex].lineNumber) + "!")
+        return tokenIndex, NumberNode(token.Token("Error", tokenList[tokenIndex].lineNumber))
 
     def traverse(tokenIndex, left):
         if type(tokenList[tokenIndex]) not in operations:
