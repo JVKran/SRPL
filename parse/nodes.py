@@ -1,58 +1,49 @@
 from lex import token
-from typing import List, Union
+from typing import List, Union, NamedTuple
 
-class FunctionNode():
-    def __init__(self, name : str, arguments : List[token.Token], codeSequence):
-        self.name = name
-        self.arguments = arguments
-        self.codeSequence = codeSequence
+class FunctionNode(NamedTuple):
+    name: str
+    arguments: List[token.Token]
+    codeSequence: List['Node']
 
-class CallNode():
-	def __init__(self, node_to_call, arg_nodes):
-		self.node_to_call = node_to_call
-		self.arg_nodes = arg_nodes
+class CallNode(NamedTuple):
+    node_to_call: 'Node'
+    arg_nodes: List['Node']
 
-class ReturnNode():
-    def __init__(self, nodeToReturn):
-        self.nodeToReturn = nodeToReturn
+class ReturnNode(NamedTuple):
+    nodeToReturn: 'Node'
 
-class ListNode():
-  def __init__(self, element_nodes):
-    self.element_nodes = element_nodes
+class ListNode(NamedTuple):
+    element_nodes: List['Node']
 
-class NumberNode():
-    def __init__(self, token : token.Token):
-        self.token = token
+class NumberNode(NamedTuple):
+    token: token.Token
 
     def __repr__(self):
         return f'{self.token}'
 
-class VariableNode():
-    def __init__(self, var_name, value = None):
-    	self.var_name = var_name
-    	self.value = value
+class VariableNode(NamedTuple):
+    var_name: str
+    value: 'Node' = None
     
     def __repr__(self):
         return f'{self.var_name}: {self.value}'
 
-class OperatorNode():
-    def __init__(self, left_node : 'Node', operator : 'Node', right_node : 'Node'):
-        self.left_node = left_node
-        self.operator = operator
-        self.right_node = right_node
+class OperatorNode(NamedTuple):
+    left_node: 'Node'
+    operator: 'OperatorNode'
+    right_node: 'Node'
 
     def __repr__(self):
         return f'({self.left_node}, {self.operator}, {self.right_node})'
 
-class IfNode():
-    def __init__(self, condition, expression, elseExpression = None):
-        self.condition = condition
-        self.expression = expression
-        self.elseExpression = elseExpression
+class IfNode(NamedTuple):
+    condition: 'Node'
+    expression: 'Node'
+    elseExpression: 'Node'
 
-class WhileNode():
-    def __init__(self, condition, codeSequence):
-        self.condition = condition
-        self.codeSequence = codeSequence
+class WhileNode(NamedTuple):
+    condition: 'Node'
+    codeSequence: 'Node'
 
 Node = Union[FunctionNode, CallNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode, ListNode, ReturnNode]

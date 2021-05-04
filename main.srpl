@@ -1,7 +1,11 @@
 task add with a and b contains 
 	flush a plus b end 
-	variable result is execute add with 3 & 5 now 
-	flush result 
+
+variable result is execute add with 3 & 5 now 
+variable sum is add 
+variable otherResult is execute sum with 4 & 5 now 
+flush result 
+flush otherResult 
 
 variable i is 1 
 while i is_less_than 5 then 
@@ -17,7 +21,7 @@ task even with n contains
 	1 else execute odd with n min 1 now end end 
 
 flush execute even with 4 now 
-flush execute odd with 100 now 
+flush execute odd with 4 now 
 flush execute even with 3 now 
 flush execute odd with 3 now 
 

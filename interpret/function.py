@@ -13,12 +13,11 @@ class Function:
         context.symbols = parentContext.symbols
         assert(len(arguments) == len(self.argumentNames))
 
-        for i in range(len(arguments)):
-            context.add_symbol(self.argumentNames[i], arguments[i])
+        zippedArguments = list(zip(self.argumentNames, arguments))
+        context.symbols.update(zippedArguments)
 
         value = interpreter.visit(self.codeSequence, context)
         return value
 
     def __repr__(self):
         return f"<function {self.name}>"
-

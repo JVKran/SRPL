@@ -19,7 +19,7 @@ def createWordList(line : str) -> List[str]:
 
 def readFile(filename : str) -> List[str]:
     file = open(filename, "r")
-    text = file.read().splitlines(True)     # Pass True to keep newline characters.
+    text = file.read().splitlines(True)
     file.close()
     return text
 
