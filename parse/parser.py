@@ -187,8 +187,8 @@ def binaryOperator(tokenList : List[token.Token], f : Callable[[A, B], C], opera
     try:
         tokenIndex, left = f(tokenList, tokenIndex)
     except TypeError:
-        print("Expected expression at line " + str(tokenList[tokenIndex].lineNumber) + "!")
-        return tokenIndex, NumberNode(token.Token("Error", tokenList[tokenIndex].lineNumber))
+        print("Error in expression at line " + str(tokenList[tokenIndex].lineNumber) + "!")
+        return tokenIndex, NumberNode(token.Token(0, tokenList[tokenIndex].lineNumber))
 
     def traverse(tokenIndex, left):
         if type(tokenList[tokenIndex]) not in operations:

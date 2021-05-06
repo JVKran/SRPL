@@ -32,3 +32,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print("Execution was interrupted!")
         exit(0)
+    except RecursionError:
+        print("Maximum recursion depth exceeded!")
+        exit(1)
