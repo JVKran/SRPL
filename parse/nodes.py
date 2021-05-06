@@ -1,9 +1,9 @@
-from lex import token
+from lex.token import Token
 from typing import List, Union, NamedTuple
 
 class FunctionNode(NamedTuple):
     name: str
-    arguments: List[token.Token]
+    arguments: List[Token]
     codeSequence: List['Node']
 
 class CallNode(NamedTuple):
@@ -17,7 +17,7 @@ class ListNode(NamedTuple):
     element_nodes: List['Node']
 
 class NumberNode(NamedTuple):
-    token: token.Token
+    token: Token
 
     def __repr__(self):
         return f'{self.token}'

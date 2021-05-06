@@ -1,4 +1,4 @@
-from lex import token
+from lex.token import Token
 from typing import TypeVar, Callable, List, Tuple
 
 A = TypeVar('A')
@@ -23,15 +23,15 @@ def readFile(filename : str) -> List[str]:
     file.close()
     return text
 
-def wordToToken(wordAndLine : Tuple) -> token.Token:
-    return token.Token(*wordAndLine)
+def wordToToken(wordAndLine : Tuple) -> Token:
+    return Token(*wordAndLine)
 
-def textToTokens(f : Callable[[str,int], List[token.Token]], text : List[str]) -> List[token.Token]:
+def textToTokens(f : Callable[[str,int], List[Token]], text : List[str]) -> List[Token]:
     if not text:
         return []
     return textToTokens(f, text[:-1]) + f(text[-1], len(text))
 
-def lineToTokens(line : str, lineNumber : int) -> List[token.Token]:
+def lineToTokens(line : str, lineNumber : int) -> List[Token]:
     wordList = createWordList(line)
     wordList = list(filter(lambda x: x != "", wordList))
     lineList = [lineNumber] * len(line)
@@ -39,7 +39,7 @@ def lineToTokens(line : str, lineNumber : int) -> List[token.Token]:
     tokenList = list(map(wordToToken, wordList))
     return tokenList
 
-def lex(text : str, fileName : str) -> List[token.Token]:
+def lex(text : str, fileName : str) -> List[Token]:
     if text == None:
         text = readFile(fileName)
     tokenList = textToTokens(lineToTokens, text)

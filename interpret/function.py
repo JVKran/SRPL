@@ -1,4 +1,4 @@
-from interpret.context import *
+from interpret.context import Context
 from interpret import interpreter
 
 class Function:

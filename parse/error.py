@@ -1,5 +1,4 @@
 from parse import parser
-from typing import NamedTuple, Optional
 
 def increment(tokenIndex, tokenList, expectedToken, message = None) -> int:
     if expectedToken and type(tokenList[tokenIndex]) != expectedToken:

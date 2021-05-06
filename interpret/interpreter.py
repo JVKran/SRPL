@@ -1,38 +1,31 @@
-from parse.nodes import ReturnNode
-from lex import token
-from parse import parser
-from typing import TypeVar, Union, Optional, Callable, List
+from typing import TypeVar, Union, Optional, List
 from operator import is_not, add
-from functools import partial
-import itertools
-from interpret.context import *
-from interpret.number import *
-from interpret.function import *
+from functools import partial, reduce
+from itertools import chain
+
+from parse.nodes import *
+from interpret.context import Context
+from interpret.number import Number
+from interpret.function import Function
 
 A = TypeVar('A')
 B = TypeVar('B')
 C = TypeVar('C')
 
-def foldl(f: Callable[[A, B], C], base : B, list : List[A]) -> List[C]:
-    if not list:
-        return base
-    head, *tail = list
-    return (f(head, foldl(f, base, tail)))
-
-def visit(node : parser.Node, context : Context) -> Number:
+def visit(node : Node, context : Context) -> Number:
     functionName = f'visit{type(node).__name__}'
 
-    def visitOperatorNode(node : parser.OperatorNode, context : Context) -> Number:
+    def visitOperatorNode(node : OperatorNode, context : Context) -> Number:
         left = visit(node.left_node, context)
         right = visit(node.right_node, context)
         methodName = f'{type(node.operator).__name__}'.replace("Token", '')
         method = getattr(left, methodName)
         return method(right)
 
-    def visitNumberNode(node : parser.NumberNode, context : Context) -> Number:
+    def visitNumberNode(node : NumberNode, context : Context) -> Number:
         return Number(node.token.stringToParse, node.token.lineNumber)
 
-    def visitVariableNode(node : parser.VariableNode, context : Context) -> Number:
+    def visitVariableNode(node : VariableNode, context : Context) -> Number:
         if node.value == None:
             variableName = node.var_name.stringToParse
             value = context.getSymbol(variableName)
@@ -42,7 +35,7 @@ def visit(node : parser.Node, context : Context) -> Number:
             context.symbols[variableName] = value
         return value
 
-    def visitIfNode(node : parser.IfNode, context : Context) -> Optional[Number]:
+    def visitIfNode(node : IfNode, context : Context) -> Optional[Number]:
         conditionIsMet = visit(node.condition, context)
         if conditionIsMet:
             expressionResult = visit(node.expression, context)
@@ -52,7 +45,7 @@ def visit(node : parser.Node, context : Context) -> Number:
             return elseExpressionResult
         return None
 
-    def visitWhileNode(node : parser.WhileNode, context : Context) -> None:
+    def visitWhileNode(node : WhileNode, context : Context) -> None:
         conditionIsMet = visit(node.condition, context)
         if conditionIsMet:
             visit(node.codeSequence, context)
@@ -60,7 +53,7 @@ def visit(node : parser.Node, context : Context) -> Number:
         else:
             return None
 
-    def visitFunctionNode(node : parser.FunctionNode, context : Context) -> Function:
+    def visitFunctionNode(node : FunctionNode, context : Context) -> Function:
         name = node.name
         codeSequence = node.codeSequence
         argumentNames = node.arguments
@@ -68,18 +61,18 @@ def visit(node : parser.Node, context : Context) -> Number:
         context.symbols[name] = functionValue
         return functionValue
 
-    def visitCallNode(node : parser.CallNode, context : Context) -> Optional[Number]:
+    def visitCallNode(node : CallNode, context : Context) -> Optional[Number]:
         arguments = []
         valueToCall = visit(node.node_to_call, context)
 
         if node.arg_nodes != None:
-            arguments = list(itertools.chain(*map(lambda node: [*arguments, visit(node, context)], node.arg_nodes)))
+            arguments = list(chain(*map(lambda node: [*arguments, visit(node, context)], node.arg_nodes)))
 
         return valueToCall.execute(arguments, context)
 
-    def visitListNode(node : parser.ListNode, context : Context) -> Union[Number, List[Number]]:
+    def visitListNode(node : ListNode, context : Context) -> Union[Number, List[Number]]:
         returnNodes = map(lambda element: ReturnNode == type(element), node.element_nodes)
-        returnPresent = foldl(add, 0, returnNodes)
+        returnPresent = reduce(add, returnNodes, 0)
         
         def visitElement(element_node):
             if not returnPresent:
@@ -89,14 +82,14 @@ def visit(node : parser.Node, context : Context) -> Number:
             visit(element_node, context)
 
         elements = []
-        elements = list(itertools.chain(*map(lambda node: [*elements, visitElement(node)], node.element_nodes)))
+        elements = list(chain(*map(lambda node: [*elements, visitElement(node)], node.element_nodes)))
         elements = list(filter(partial(is_not, None), elements))
         
         if len(elements) == 1:
             return elements[0]
         return elements
 
-    def visitReturnNode(node : parser.ReturnNode, context : Context) -> Optional[Number]:
+    def visitReturnNode(node : ReturnNode, context : Context) -> Optional[Number]:
         if node.nodeToReturn:
             value = visit(node.nodeToReturn, context)
             return value
