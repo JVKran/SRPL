@@ -7,18 +7,19 @@ class FunctionNode(NamedTuple):
     codeSequence: List['Node']
 
 class CallNode(NamedTuple):
-    node_to_call: 'Node'
-    arg_nodes: List['Node']
+    nodeToCall: 'Node'
+    argumentNodes: List['Node']
 
 class ReturnNode(NamedTuple):
     nodeToReturn: 'Node'
 
 class ListNode(NamedTuple):
-    element_nodes: List['Node']
+    elementNodes: List['Node']
 
 class NumberNode(NamedTuple):
     token: Token
 
+    # __repr__ -> String
     def __repr__(self):
         return f'{self.token}'
 
@@ -26,6 +27,7 @@ class VariableNode(NamedTuple):
     var_name: str
     value: 'Node' = None
     
+    # __repr__ -> String
     def __repr__(self):
         return f'{self.var_name}: {self.value}'
 
@@ -34,6 +36,7 @@ class OperatorNode(NamedTuple):
     operator: 'OperatorNode'
     right_node: 'Node'
 
+    # __repr__ -> String
     def __repr__(self):
         return f'({self.left_node}, {self.operator}, {self.right_node})'
 

@@ -1,23 +1,29 @@
+from typing import List, Tuple
 from interpret.context import Context
 from interpret import interpreter
+from interpret.number import Number
+from parse.nodes import ListNode
 
 class Function:
-    def __init__(self, name, codeSequence, argumentNames, context):
+
+    # __init__ :: String -> ListNode -> [String] -> Context -> Nothing
+    def __init__(self, name : str, codeSequence : ListNode, argumentNames : List[str], context : Context):
         self.name = name
         self.codeSequence = codeSequence
         self.argumentNames = argumentNames
         self.context = context
 
-    def execute(self, arguments, parentContext):
+    # execute :: [Number] -> Context -> Number
+    def execute(self, arguments : List[Number], parentContext : Context) -> Number:
         context = Context(self.name, parentContext)
         context.symbols = parentContext.symbols
         assert(len(arguments) == len(self.argumentNames))
 
-        zippedArguments = list(zip(self.argumentNames, arguments))
+        zippedArguments: List[Tuple[str, Number]] = list(zip(self.argumentNames, arguments))
         context.symbols.update(zippedArguments)
 
-        value = interpreter.visit(self.codeSequence, context)
-        return value
+        return interpreter.visit(self.codeSequence, context)
 
+    # __repr__ -> String
     def __repr__(self):
         return f"<function {self.name}>"

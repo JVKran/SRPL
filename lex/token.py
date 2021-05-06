@@ -2,13 +2,24 @@ from typing import List, Dict
 
 class Token():
 
-    def __init__(self, stringToParse : str, lineNumber : int):
+    # __init__ :: String -> Integer -> Nothing
+    def __init__(self, stringToParse : str, lineNumber : int) -> None:
         self.stringToParse = stringToParse
         self.lineNumber = lineNumber
 
-    def __new__(cls, stringToParse : str, lineNumber : int):
-        subclassDict = {}
-        Token.createSubclassDict(cls.__subclasses__(), subclassDict)
+    # __new__ :: Token -> String -> Integer -> Token
+    def __new__(cls : 'Token', stringToParse : str, lineNumber : int) -> 'Token':
+        """ Create new token.
+        This method might need some more explanation too. First of all, 
+        a subclass dictionary is created. This dictionary contains the
+        names (for example if, while, \n, plus, etc.) and the corresponding
+        subclass.
+
+        This way, a lexed word can easily be used to create an instance 
+        of the corresponding subclass. 
+        """
+        subclassDict: Dict[str, 'Token'] = {}
+        cls.createSubclassDict(cls.__subclasses__(), subclassDict)
         if stringToParse and stringToParse[0].isdigit():
             if '.' in stringToParse:
                 subclass = FloatToken
@@ -21,23 +32,48 @@ class Token():
                 subclass = subclassDict[stringToParse]
             except KeyError:
                 subclass = VariableToken
-        instance = super(Token, subclass).__new__(subclass)
-        return instance
+        return super(cls, subclass).__new__(subclass)
 
     @staticmethod
-    def createSubclassDict(subclasses : List, subclassDict : Dict) -> Dict:
+    # createSubclassDict :: [Token] -> Dictionary -> Dictionary
+    def createSubclassDict(subclasses : List['Token'], subclassDict : Dict[str, 'Token']) -> Dict[str, 'Token']:
         if not subclasses:
             return subclassDict
         else: 
             subclassDict.update({subclasses[0].name: subclasses[0]})
             return Token.createSubclassDict(subclasses[1:], subclassDict)
 
+    # __str__ -> String
     def __str__(self) -> str:
         return self.__class__.__name__ + str(" \'" + str(self.stringToParse) + "\'")
 
+    # __repr__ -> String
     def __repr__(self) -> str:
         return str(self)
 
+class IntegerToken(Token):
+    name = ""
+
+    # __init__ :: Integer -> Integer -> Nothing
+    def __init__(self, integer : int, lineNumber : int) -> None:
+        self.stringToParse = int(integer)
+        self.lineNumber = lineNumber
+
+    # __new__ :: Token -> String -> IntegerToken
+    def __new__(cls : Token, stringToParse : str) -> 'IntegerToken':
+        return super(cls, IntegerToken).__new__(IntegerToken)
+
+class FloatToken(Token):
+    name = ""
+
+    # __init__ :: Float -> Integer -> Nothing
+    def __init__(self, value : float, lineNumber : int) -> None:
+        self.stringToParse = float(value)
+        self.lineNumber = lineNumber
+
+    # __new__ :: Token -> String -> FloatToken
+    def __new__(cls : Token, stringToParse : str) -> 'FloatToken':
+        return super(cls, FloatToken).__new__(FloatToken)
 
 class AssignmentToken(Token):
     name = "is"
@@ -131,23 +167,3 @@ class LeftParenToken(Token):
 
 class RightParenToken(Token):
     name = ")"
-
-class IntegerToken(Token):
-    name = ""
-
-    def __init__(self, integer : int, lineNumber : int):
-        self.stringToParse = int(integer)
-        self.lineNumber = lineNumber
-
-    def __new__(cls, stringToParse : str):
-        return super(Token, IntegerToken).__new__(IntegerToken)
-
-class FloatToken(Token):
-    name = ""
-
-    def __init__(self, value : float, lineNumber : int):
-        self.stringToParse = float(value)
-        self.lineNumber = lineNumber
-
-    def __new__(cls, stringToParse : str):
-        return super(Token, FloatToken).__new__(FloatToken)

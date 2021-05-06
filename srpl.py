@@ -4,13 +4,17 @@ from interpret.interpreter import *
 from interpret.context import *
 import sys
 
-def file(context : Context):
-    tokens = lex(None, sys.argv[1])
-    ast = parse(tokens)
-    result = visit(ast, context)
-    print(str(result))
+# file :: Context -> String
+def file(context : Context) -> str:
+    """ Lex, parse and interpret file with name of first passed argument. """
+    tokens: List[Token] = lex(None, sys.argv[1])
+    ast: Node = parse(tokens)
+    result: Union[List[Number], Number] = visit(ast, context)
+    return str(result)
 
+# shell :: Context -> Nothing
 def shell(context : Context):
+    """ Read, lex, parse and interpret shell commands until user exits. """
     while True:
         text = input("SRPL  > ")
         if text == "exit": exit(0)
@@ -25,8 +29,8 @@ def shell(context : Context):
 if __name__ == '__main__':
     context = Context("<main>")
     try:
-        if len(sys.argv) == 2:
-            file(context)
+        if len(sys.argv) == 2:          # If filename has been passed as argument.
+            print(file(context))
         else:
             shell(context)
     except KeyboardInterrupt:
@@ -34,4 +38,7 @@ if __name__ == '__main__':
         exit(0)
     except RecursionError:
         print("Maximum recursion depth exceeded!")
+        exit(1)
+    except FileNotFoundError:
+        print("File \'" + sys.argv[1] + "\' could't be found.")
         exit(1)
