@@ -6,7 +6,7 @@ import sys
 
 # file :: Context -> String
 def file(context : Context) -> str:
-    """ Lex, parse and interpret file with name of first passed argument. """
+    """ Lex, parse and interpret file with name of first commandline argument. """
     tokens: List[Token] = lex(None, sys.argv[1])
     ast: Node = parse(tokens)
     result: Union[List[Number], Number] = visit(ast, context)

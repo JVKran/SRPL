@@ -21,10 +21,23 @@ task even with n contains
 	flush if n is_equal_to 0 then 
 	1 else execute odd with n min 1 now end end 
 
+variable evenCopy is even 
+
 flush execute even with 4 now 
 flush execute odd with 4 now 
-flush execute even with 3 now 
+flush execute evenCopy with 3 now 
 flush execute odd with 3 now 
+
+task apply with number and lambda contains 
+	execute lambda with number now end 
+
+task makeTwenty with n contains 
+	variable n is 20 
+	flush n end 
+
+variable wasntTwenty is 18 
+variable wasntTwenty is execute apply with wastnZero & makeTwenty now 
+flush wasntTwenty 
 
 task sommig with n contains 
 	variable result is 0 
