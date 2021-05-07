@@ -1,2 +1,3 @@
-task add with a and b contains 
-	flush a plus b end 
+task add with r0 and r1 contains 
+	variable r0 is r0 plus r1 
+	flush r0 end 
