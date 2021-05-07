@@ -109,6 +109,7 @@ def visit(node : Node, context : Context) -> Union[Number, List[Number]]:
             return elements[0]
         return elements
 
+    # visitReturnNode :: ReturnNode -> Context -> Number | Nothing
     def visitReturnNode(node : ReturnNode, context : Context) -> Optional[Number]:
         """ Execute return statement. """
         if node.nodeToReturn:

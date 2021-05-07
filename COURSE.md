@@ -1,8 +1,12 @@
 ## Course requirements
-The Hogeschool Utrecht also demands some other things that are required for passing the course 'Advanced Technical Programming'.
+The Hogeschool Utrecht demands some specific things that are required for passing the course 'Advanced Technical Programming'. They will be described below. Furthermore, the (dutch) [video](https://youtu.be/ZOofobzfqxk) can be found on YouTube.
 
 ### Turing Completeness
 First of all, the language should be Turing Complete. It is stated that any language is *certainly* turing complete if it has conditional branching (which is the case with the implemented if-else-statement), it has the ability to change an arbitrary amount of memory (with, for example, the implemented variables) and it can run forever (with, again for example, the supported while-loop or plain recursion). Furthermore, it should be able to use infinite memory. Of course this is limited by the hardware, but SRPL doesn't restrict the amount of memory usage. Hence, we can conclude SRPL is Turing Complete. The recursively typed *certaintly* has a reason though; a language doesn't have to specifically support these things (Brainf*ck for example is also Turing Complete), but they do prove a language is Turing Complete. (Minsky, 1961)
+
+Another way of proving Turing Completeness consists of showing another Turing Complete language with the same features. This is way easier of course, but doesn't teach you anything. Nevertheless, for more certainty; SRPL supports the same features as the Turing Complete language [VES++](https://github.com/vera98x/Interpreter) apart from print statements and comments.
+
+> **Recursionlimit**: Please note though that this language is built upon Python and Python lacks tail recursion optimizatons; the program is only able to run forever when the recursive function periodically returns and is started again. One can reduce the size of this problem by calling ```sys.setrecursionlimit()``` after getting the current limit by calling ```sys.getrecursionlimit()``` and adding a value or 500-1000.
 
 ### Functional programming
 Second of all, the entire codebase should be written in a _Functional_ way. That's almost entirely the case. I've used some exceptions for handing key- and recursion errors and print statements for notifying the user about errors in a way that enables the lexer, parser and interpreter to continue as good as possible. Other than that, I don't think there's other non-functional programming present.
