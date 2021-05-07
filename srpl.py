@@ -2,6 +2,7 @@ from lex.lexer import lex
 from parse.parser import parse
 from interpret.interpreter import *
 from interpret.context import *
+from compile.compiler import *
 import sys
 
 # file :: Context -> String
@@ -31,6 +32,10 @@ if __name__ == '__main__':
     try:
         if len(sys.argv) == 2:          # If filename has been passed as argument.
             print(file(context))
+        elif len(sys.argv) == 3:          # If filename has been passed as argument.
+            tokens: List[Token] = lex(None, sys.argv[1])
+            ast: Node = parse(tokens)
+            compiler = Compiler(sys.argv[1], sys.argv[2], ast[0][0])
         else:
             shell(context)
     except KeyboardInterrupt:
