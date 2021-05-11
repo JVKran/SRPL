@@ -1,2 +1,10 @@
 *.py[cod]
 __pycache__/
+*.o
+*.bin
+*.ld
+*.map
+*.elf
+_cc_flags
+_linker_flags
+bmptk_fixed_size_stack.c
