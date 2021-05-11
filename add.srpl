@@ -1,3 +1,3 @@
-task sub with a and b and c contains 
-	variable d is b min c 
-	flush a min d end
+task min with a and b contains 
+	flush if a is_less_than_or_equal_to b then 
+	a else b end end 

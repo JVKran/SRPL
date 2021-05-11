@@ -1,0 +1,3 @@
+task even with n contains 
+	flush if n is_equal_to 0 then 
+	1 else execute odd with n min 1 now end end 

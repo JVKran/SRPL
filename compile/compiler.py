@@ -18,11 +18,15 @@ class Compiler():
         print("This function requires", requiredRegisters, "registers!")
 
         self.file = open(destinationFile, "w")
-        arguments: str = ("int, " * len(function.arguments))[:-2]       # Skip last ", "
-        print(f'{function.name}({arguments}):')
+        print("\t.cpu cortex-m0")
+        print("\t.text")
+        print("\t.align 2")
+        print("\t.global application\n")
+        print(f'{function.name}:')
         print("\tpush \t{r4, r5, r6, lr}")
 
     def __del__(self):
+        print("end:")
         print("\tpop \t{r4, r5, r6, pc}")
         self.file.close()
     
@@ -44,7 +48,7 @@ class Compiler():
             """ Create number from number node. """
             availableRegister = context.getRegister()
             number = Number(node.token.stringToParse, node.token.lineNumber, availableRegister)
-            print(f"\tadds\t{availableRegister}, {availableRegister}, #{number.value}")
+            print(f"\tmovs\t{availableRegister}, #{number.value}")
             return number
 
         # compileVariableNode :: VariableNode -> Context -> Number
@@ -57,16 +61,21 @@ class Compiler():
                 variableName = node.var_name
                 value = self.compile(node.value, context)
                 context.symbols[variableName] = value
+            print(f"\tmovs\tr0, {value.register}")
             return value
 
         def compileIfNode(node : IfNode, context : Context) -> Optional[Number]:
             """ Execute expression of if statement when condition is met or exepression of else statement when provided. """
             conditionIsMet: Number = self.compile(node.condition, context)
-            if conditionIsMet:
-                return self.compile(node.expression, context)
-            elif node.elseExpression:
-                return self.compile(node.elseExpression, context)
-            return None
+            print(f"\tcmp\t{conditionIsMet.register}, #1")
+            segment = context.getSegment()
+            print(f"\tbne\t{segment}")     # If condition isn't met; go to L2.
+            res = self.compile(node.expression, context)
+            print("\tb\tend")
+            print(f"{segment}:")
+            if node.elseExpression:
+                self.compile(node.elseExpression, context)
+            return res
 
         # compileWhileNode :: WhileNode -> Context -> Nothing
         def compileWhileNode(node : WhileNode, context : Context) -> None:
@@ -85,6 +94,12 @@ class Compiler():
             arguments = [Number(0, 0, context.getRegister()) for _ in range(len(node.arguments))]           # TODO: Make functional.
             codeSequence, context = functionValue.execute(arguments, context)
             return self.compile(codeSequence, context)
+
+        def compileCallNode(node : FunctionNode, context : Context):
+            arguments: List[Number] = []
+            if node.argumentNodes != None:
+                arguments = list(chain(*map(lambda node: [*arguments, self.compile(node, context)], node.argumentNodes)))
+            print(f"\tbl\t{node.nodeToCall.var_name.stringToParse}")
 
         # compileListNode :: ListNode -> Context -> Number | [Number]
         def compileListNode(node : ListNode, context : Context) -> Union[Number, List[Number]]:
@@ -119,7 +134,9 @@ class Compiler():
         def compileReturnNode(node : ReturnNode, context : Context) -> Optional[Number]:
             """ Execute return statement. """
             if node.nodeToReturn:
-                return self.compile(node.nodeToReturn, context)
+                res = self.compile(node.nodeToReturn, context)
+                print(f"\tmovs\tr0, {res.register}")
+                return res
 
         functionName: str = f'compile{type(node).__name__}'                       # Determine name of function to call.
         function = locals()[functionName]                                       # Get function with corresponding name.
