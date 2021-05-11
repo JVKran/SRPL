@@ -1,4 +1,5 @@
 from parse.nodes import FunctionNode, IfNode, ReturnNode, VariableNode
+from lex.token import *
 from typing import List
 
 class Compiler():
@@ -17,22 +18,31 @@ class Compiler():
     def compile(self):
         for i in range(len(self.function.codeSequence[0])):
             node = self.function.codeSequence[0][i]
-            functionName: str = f'compile{type(node).__name__}'
-            function = globals()[functionName]
-            function(node)
+            methodName: str = f'compile{type(node).__name__}'
+            method = getattr(self, methodName)
+            method(node)
 
     def __del__(self):
         self.file.write("\tpop \t{r4, r5, r6, pc}\n")
         self.file.close()
 
-def compileIfNode(node : IfNode):
-    print(node)
-    print("IfNode has been compiled.")
+    def compileIfNode(self, node : IfNode):
+        print(node)
+        print("IfNode has been compiled.")
 
-def compileReturnNode(node : ReturnNode):
-    print(node)
-    print("ReturnNode has been compiled.")
+    def compileReturnNode(self, node : ReturnNode):
+        print(node)
+        print("ReturnNode has been compiled.")
 
-def compileVariableNode(node : VariableNode):
-    print(node)
-    print("VariableNode has been compiled.")
+    def compileVariableNode(self, node : VariableNode):
+        operator = node.value[1]
+        operatorName = ""
+        if type(operator) == AddToken:
+            operatorName = "adds"
+        elif type(operator) == SubstractToken:
+            operatorName = "subs"
+        elif type(operator) == MultiplyToken:
+            operatorName = "muls"
+        self.file.write(f'\t{operatorName} \t{node.var_name}, {node.value[0].var_name.stringToParse}, {node.value[2].var_name.stringToParse}\n')
+        print(node)
+        print("VariableNode has been compiled.")
