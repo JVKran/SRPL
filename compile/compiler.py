@@ -36,12 +36,16 @@ class Compiler():
             right = self.compile(node.right_node, context)
             methodName = f'{type(node.operator).__name__}'.replace("Token", '')         # AddToken becomes Add, MultiplyToken becomes Multiply, etc.
             method = getattr(left, methodName)
-            return method(right)
+            res = method(right)
+            return res
 
         # compileNumbernode :: NumberNode -> Context -> Number
         def compileNumberNode(node : NumberNode, context : Context) -> Number:
             """ Create number from number node. """
-            return Number(node.token.stringToParse, node.token.lineNumber)
+            availableRegister = context.getRegister()
+            number = Number(node.token.stringToParse, node.token.lineNumber, availableRegister)
+            print(f"\tadds\t{availableRegister}, {availableRegister}, #{number.value}")
+            return number
 
         # compileVariableNode :: VariableNode -> Context -> Number
         def compileVariableNode(node : VariableNode, context : Context) -> Number:
@@ -78,8 +82,9 @@ class Compiler():
             """ Create function from function definition and add it to symboltable. """
             functionValue = Function(node.name, node.codeSequence, node.arguments, context)
             context.symbols[node.name] = functionValue
-            arguments = [Number(0, 0, "r0"), Number(0, 0, "r1")]
-            return functionValue.execute(arguments, context)
+            arguments = [Number(0, 0, context.getRegister()) for _ in range(len(node.arguments))]           # TODO: Make functional.
+            codeSequence, context = functionValue.execute(arguments, context)
+            return self.compile(codeSequence, context)
 
         # compileListNode :: ListNode -> Context -> Number | [Number]
         def compileListNode(node : ListNode, context : Context) -> Union[Number, List[Number]]:

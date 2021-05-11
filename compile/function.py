@@ -1,7 +1,7 @@
 from typing import List, Tuple
-from interpret.context import Context
-from interpret import interpreter
-from interpret.number import Number
+from compile.context import Context
+from compile import compiler
+from compile.number import Number
 from parse.nodes import ListNode
 
 class Function:
@@ -22,7 +22,7 @@ class Function:
         zippedArguments: List[Tuple[str, Number]] = list(zip(self.argumentNames, arguments))
         context.symbols.update(zippedArguments)
 
-        return interpreter.visit(self.codeSequence, context)
+        return self.codeSequence, context
 
     # __repr__ -> String
     def __repr__(self):
