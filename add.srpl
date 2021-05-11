@@ -1,3 +1,2 @@
-task fib with n contains 
-	flush if n is_less_than_or_equal_to 1 then 
-	n else execute fib with n min 1 now plus execute fib with n min 2 now end end
+task add with a and b contains 
+	flush a and b end 

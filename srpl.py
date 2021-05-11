@@ -36,7 +36,7 @@ if __name__ == '__main__':
             tokens: List[Token] = lex(None, sys.argv[1])
             ast: Node = parse(tokens)
             compiler = Compiler(sys.argv[1], sys.argv[2], ast[0][0])
-            compiler.compile()
+            compiler.compile(ast, context)
         else:
             shell(context)
     except KeyboardInterrupt:
