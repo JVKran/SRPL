@@ -1,0 +1,2 @@
+task equals with a and b contains ; 
+    flush a is_equal_to b end 

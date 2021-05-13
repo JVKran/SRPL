@@ -1,4 +1,4 @@
-SOURCES := odd.asm even.asm
+SOURCES := odd.asm even.asm equals.asm if.asm
 HEADERS :=
 SEARCH  := 
 

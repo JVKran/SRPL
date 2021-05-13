@@ -1,0 +1,4 @@
+task if_test with a contains ; 
+    variable result is if a is_equal_to 3 then 
+    1 else 0 end 
+    flush result 

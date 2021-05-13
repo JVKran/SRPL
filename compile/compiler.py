@@ -2,6 +2,7 @@ from typing import List, Optional
 from operator import is_not, add
 from functools import partial, reduce
 from itertools import chain
+from copy import copy
 
 from parse.nodes import *
 from compile.context import Context
@@ -21,12 +22,11 @@ class Compiler():
         print("\t.cpu cortex-m0")
         print("\t.text")
         print("\t.align 2")
-        print("\t.global application\n")
+        print(f"\t.global {function.name}\n")
         print(f'{function.name}:')
         print("\tpush \t{r4, r5, r6, lr}")
 
     def __del__(self):
-        print("end:")
         print("\tpop \t{r4, r5, r6, pc}")
         self.file.close()
     
@@ -40,7 +40,7 @@ class Compiler():
             right = self.compile(node.right_node, context)
             methodName = f'{type(node.operator).__name__}'.replace("Token", '')         # AddToken becomes Add, MultiplyToken becomes Multiply, etc.
             method = getattr(left, methodName)
-            res = method(right)
+            res = method(right, context)
             return res
 
         # compileNumbernode :: NumberNode -> Context -> Number
@@ -67,12 +67,14 @@ class Compiler():
         def compileIfNode(node : IfNode, context : Context) -> Optional[Number]:
             """ Execute expression of if statement when condition is met or exepression of else statement when provided. """
             conditionIsMet: Number = self.compile(node.condition, context)
+            availableRegisters = copy(context.registers)            # Save registers since the condition is either true, or false.
             print(f"\tcmp\t{conditionIsMet.register}, #1")
             segment = context.getSegment()
-            print(f"\tbne\t{segment}")     # If condition isn't met; go to L2.
+            print(f"\tbne\t{segment}")                              # If condition isn't met; go to L2.
             res = self.compile(node.expression, context)
             print("\tb\tend")
             print(f"{segment}:")
+            context.registers = availableRegisters
             if node.elseExpression:
                 self.compile(node.elseExpression, context)
             return res
@@ -135,6 +137,7 @@ class Compiler():
             """ Execute return statement. """
             if node.nodeToReturn:
                 res = self.compile(node.nodeToReturn, context)
+                print("end:")
                 print(f"\tmovs\tr0, {res.register}")
                 return res
 

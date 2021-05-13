@@ -15,7 +15,7 @@ class Function:
 
     # execute :: [Number] -> Context -> Number
     def execute(self, arguments : List[Number], parentContext : Context) -> Number:
-        context = Context(self.name, parentContext)
+        context = parentContext
         context.symbols = parentContext.symbols
         assert(len(arguments) == len(self.argumentNames))
 
