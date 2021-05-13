@@ -78,7 +78,8 @@ class Compiler():
             context.registers = availableRegisters
             if node.elseExpression:
                 self.compile(node.elseExpression, context)
-                print(f"\tmovs\t{resReg}, r0")                      # Inherent to the way SRPL deals with variables and return values.
+                if(type(node.elseExpression) == CallNode):
+                    print(f"\tmovs\t{resReg}, r0")                      # Inherent to the way SRPL deals with variables and return values.
             return res
 
         # compileWhileNode :: WhileNode -> Context -> Nothing
