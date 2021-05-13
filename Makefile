@@ -1,4 +1,4 @@
-SOURCES :=
+SOURCES := odd.asm even.asm
 HEADERS :=
 SEARCH  := 
 
