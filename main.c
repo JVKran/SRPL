@@ -8,6 +8,7 @@ extern int even(int a);
 extern int odd(int b);
 extern bool equals(int a, int b);
 extern bool if_test(int a);
+extern int summy(int a);
 
 void delay(const uint16_t delay_ms){
 	for(int i = 0; i < delay_ms * 1000; ++i){
@@ -20,6 +21,7 @@ int main( void ){
     PIOB->PIO_OER = 0x1U << LED_GPIO;           // Enable output
 
     bool all_correct = true;
+    all_correct &= (summy(34) == 595);
     for(uint8_t i = 0; i < 200; i++){
         all_correct &= (even(i) == (i % 2 == 0));
         all_correct &= (odd(i) == i % 2);

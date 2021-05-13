@@ -1,0 +1,6 @@
+task summy with n contains 
+	variable result is 0 
+	while n is_greater_than_or_equal_to 1 then 
+		variable result is result plus n 
+		variable n is n min 1 end 
+	flush result end 

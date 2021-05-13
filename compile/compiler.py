@@ -85,11 +85,12 @@ class Compiler():
         # compileWhileNode :: WhileNode -> Context -> Nothing
         def compileWhileNode(node : WhileNode, context : Context) -> None:
             """ Execute while loop until condition is no longer met. """
+            print("loop:")
             conditionIsMet: Number = self.compile(node.condition, context)
-            if conditionIsMet:
-                self.compile(node.codeSequence, context)           # Execute while-body once.
-                return compileWhileNode(node, context)        # Then check for meeting condition.
-            return
+            print(f"\tcmp\t{conditionIsMet.register}, #1")
+            print(f"\tbne\tend")                              # If condition isn't met; go to L2.
+            self.compile(node.codeSequence, context)
+            print("\tb\tloop")
 
         # compileFunctionNode :: FunctionNode -> Context -> Function
         def compileFunctionNode(node : FunctionNode, context : Context) -> Function:

@@ -34,7 +34,7 @@ class Number():
     # Equality :: Number -> Number
     def Equality(self, other : 'Number', context: Context) -> 'Number':
         scratchRegister = context.getRegister()
-        tempRegister = context.getRegister()
+        tempRegister = context.getRegister()                        # Used since we don't want the original register to change.
         print(f"\tsub\t{tempRegister}, {other.register}, {self.register}")
         print(f"\tneg\t{scratchRegister}, {tempRegister}")           # TODO: Request register from context.
         print(f"\tadc\t{scratchRegister}, {scratchRegister}, {tempRegister}")
@@ -43,15 +43,16 @@ class Number():
     # NonEquality :: Number -> Number    
     def NonEquality(self, other : 'Number', context: Context) -> 'Number':
         scratchRegister = context.getRegister()
-        print(f"\tsub\t{scratchRegister}, {other.register}, {self.register}")
-        print(f"\tsub\t{self.register}, {scratchRegister}, #1")
-        print(f"\tsdc\t{scratchRegister}, {scratchRegister}, {self.register}")
-        return Number(int(self.value != other.value), self.lineNumber, self.register)
+        tempRegister = context.getRegister()                            # TODO: Free temp register.
+        print(f"\tsub\t{tempRegister}, {other.register}, {self.register}")
+        print(f"\tsub\t{scratchRegister}, {tempRegister}, #1")
+        print(f"\tsbc\t{scratchRegister}, {scratchRegister}, {scratchRegister}")
+        return Number(int(self.value != other.value), self.lineNumber, scratchRegister)
 
     # Less :: Number -> Number
     def Less(self, other : 'Number', context: Context) -> 'Number':
         scratchRegister = context.getRegister()
-        print(f"\tmovs\t{scratchRegister}, #1")
+        print(f"\tmov\t{scratchRegister}, #1")
         print(f"\tcmp\t{self.register}, {other.register}")
         print("\tblt\t.L2")
         print(f"\tmovs\t{scratchRegister}, #0")
@@ -72,20 +73,23 @@ class Number():
 
     # LessEqual :: Number -> Number
     def LessEqual(self, other : 'Number', context: Context) -> 'Number':
-        print(f"\tlsrs\t{self.register}, {self.register}, #31")
-        print(f"\tasrs\tr2, {other.register}, #31")
-        print(f"\tcmp\t{other.register}, r3")
-        print(f"\tadcs\t{self.register}, {self.register}, r2")
-        return Number(int(self.value <= other.value), self.lineNumber, self.register)
+        scratchRegister = context.getRegister()
+        tempRegister = context.getRegister()
+        print(f"\tlsr\t{scratchRegister}, {self.register}, #31")
+        print(f"\tasr\t{tempRegister}, {other.register}, #31")
+        print(f"\tcmp\t{self.register}, {other.register}")
+        print(f"\tadc\t{scratchRegister}, {scratchRegister}, {tempRegister}")
+        return Number(int(self.value <= other.value), self.lineNumber, scratchRegister)
 
     # GreaterEqual :: Number -> Number
     def GreaterEqual(self, other : 'Number', context: Context) -> 'Number':
-        print(f"\tmovs\tr3, {self.register}")
-        print(f"\tasrs\t{self.register}, {self.register}, #31")
-        print(f"\tlsrs\tr2, {other.register}, #31")
-        print(f"\tcmp\tr3, {other.register}")
-        print(f"\tadcs\t{self.register}, {self.register}, r2")
-        return Number(int(self.value >= other.value), self.lineNumber, self.register)
+        scratchRegister = context.getRegister()
+        otherRegister = context.getRegister()
+        print(f"\tasr\t{scratchRegister}, {self.register}, #31")
+        print(f"\tlsr\t{otherRegister}, {other.register}, #31")
+        print(f"\tcmp\t{self.register}, {other.register}")
+        print(f"\tadc\t{scratchRegister}, {scratchRegister}, {otherRegister}")
+        return Number(int(self.value >= other.value), self.lineNumber, scratchRegister)
 
     # And :: Number -> Number
     def And(self, other : 'Number', context: Context) -> 'Number':
