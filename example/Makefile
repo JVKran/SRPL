@@ -1,12 +1,10 @@
-SOURCES := odd.asm even.asm equals.asm if.asm summy.asm
-HEADERS :=
-SEARCH  := 
+SOURCES 		:= $(wildcard source/*.asm)
 
-TARGET            ?= arduino_due
-SERIAL_PORT       ?= COM2
-RUN_TERMINAL      ?=					# Don't run terminal 
+TARGET          ?= arduino_due
+SERIAL_PORT     ?= COM2
+RUN_TERMINAL    ?= # Don't run terminal 
 
-RELATIVE          ?= ../../ATP
-BMPTK             := $(RELATIVE)/bmptk
+RELATIVE        ?= ../../ATP
+BMPTK           := $(RELATIVE)/bmptk
 
-include           $(BMPTK)/makefile.inc
+include         $(BMPTK)/makefile.inc
