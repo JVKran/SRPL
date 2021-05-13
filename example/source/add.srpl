@@ -1,3 +1,0 @@
-task min with a and b contains 
-	flush if a is_less_than_or_equal_to b then 
-	a else b end end 

@@ -4,7 +4,7 @@
 	.global summy
 
 summy:
-	push 	{r4, r5, r6, lr}
+	push 	{r4, r5, r6, r7, lr}
 	movs	r1, #0
 loop:
 	movs	r2, #1
@@ -15,9 +15,9 @@ loop:
 	cmp 	r3, #1
 	bne 	end
 	add 	r1, r0
-	movs	r5, #1
-	sub 	r0, r5
+	movs	r4, #1
+	sub 	r0, r4
 	b    	loop
 end:
 	movs	r0, r1
-	pop 	{r4, r5, r6, pc}
+	pop 	{r4, r5, r6, r7, pc}

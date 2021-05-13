@@ -13,6 +13,15 @@ def file(context : Context) -> str:
     result: Union[List[Number], Number] = visit(ast, context)
     return str(result)
 
+def compile_files():
+    import os
+    for directory, subdirectory, files in os.walk("."):
+        for file in files:
+            if file.endswith(".srpl"):
+                targetFileName = directory + "\\" + file.replace(".srpl", ".asm")
+                sourceFileName = directory + "\\" + file
+                os.system(f'python srpl.py {sourceFileName} {targetFileName}')
+
 # shell :: Context -> Nothing
 def shell(context : Context):
     """ Read, lex, parse and interpret shell commands until user exits. """
@@ -20,6 +29,9 @@ def shell(context : Context):
         text = input("SRPL  > ")
         if text == "exit": exit(0)
         if text == "": continue
+        if text == "compile": 
+            compile_files()
+            continue
 
         tokens = lex([text], None)
         ast = parse(tokens)
