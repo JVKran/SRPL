@@ -1,0 +1,2 @@
+task less with a and b contains ; 
+    flush a is_less_than b end 

@@ -8,7 +8,7 @@ class Context():
         self.name = name
         self.parent = parent
         self.symbols = {}
-        self.registers = ["r0", "r1", "r2", "r3", "r4", "r5", "r6"]
+        self.registers = ["r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7"]
         self.segments = [".L2", ".L4", ".L6", ".L8", ".L10"]
 
     # getSymbol :: String -> Node | Nothing
@@ -17,18 +17,6 @@ class Context():
         if value == None and self.parent != None:
             return self.parent.getSymbol(name)
         return value
-
-    def getRegister(self, register: str = None):
-        if register:
-            return self.registers.remove(register)
-        return self.registers.pop(0)
-
-    def getSegment(self):
-        return self.segments.pop(0)
-
-    def pop(self):
-        self.registers = ["r0", "r1", "r2", "r3", "r4", "r5", "r6"]
-        self.segments = [".L2", ".L4", ".L6", ".L8", ".L10"]
 
     # __repr__ -> String
     def __repr__(self) -> str:

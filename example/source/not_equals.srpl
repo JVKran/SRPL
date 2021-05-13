@@ -1,0 +1,2 @@
+task not_equals with a and b contains ; 
+    flush a is_not_equal_to b end 

@@ -1,0 +1,2 @@
+task or_test with a contains 
+    flush a is_greater_than_or_equal_to 150 or a is_less_than 50 end

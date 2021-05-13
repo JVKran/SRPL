@@ -1,0 +1,2 @@
+task and_test with a contains 
+    flush a is_greater_than 50 and a is_less_than_or_equal_to 150 end

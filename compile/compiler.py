@@ -24,10 +24,10 @@ class Compiler():
         self.file.write("\t.align 2\n")
         self.file.write(f"\t.global {function.name}\n\n")
         self.file.write(f'{function.name}:\n')
-        self.file.write("\tpush \t{r4, r5, r6, lr}\n")
+        self.file.write("\tpush \t{r4, r5, r6, r7, lr}\n")
 
     def __del__(self):
-        self.file.write("\tpop \t{r4, r5, r6, pc}\n")
+        self.file.write("\tpop \t{r4, r5, r6, r7, pc}\n")
         self.file.close()
     
     def compile(self, node : Node, context : Context):
@@ -46,9 +46,10 @@ class Compiler():
         # compileNumbernode :: NumberNode -> Context -> Number
         def compileNumberNode(node : NumberNode, context : Context) -> Number:
             """ Create number from number node. """
-            availableRegister = context.getRegister()
+            availableRegister = context.registers.pop(0)
             number = Number(node.token.stringToParse, node.token.lineNumber, availableRegister)
             self.file.write(f"\tmovs\t{availableRegister}, #{number.value}\n")
+            # print("Number")
             return number
 
         # compileVariableNode :: VariableNode -> Context -> Number
@@ -68,7 +69,7 @@ class Compiler():
             conditionIsMet: Number = self.compile(node.condition, context)
             availableRegisters = copy(context.registers)            # Save registers since the condition is either true, or false.
             self.file.write(f"\tcmp \t{conditionIsMet.register}, #1\n")
-            segment = context.getSegment()
+            segment = context.segments.pop(0)
             self.file.write(f"\tbne \t{segment}\n")                              # If condition isn't met; go to L2.
             resReg = context.registers[0]
             res = self.compile(node.expression, context)
@@ -96,7 +97,7 @@ class Compiler():
             """ Create function from function definition and add it to symboltable. """
             functionValue = Function(node.name, node.codeSequence, node.arguments, context)
             context.symbols[node.name] = functionValue
-            arguments = [Number(0, 0, context.getRegister()) for _ in range(len(node.arguments))]           # TODO: Make functional.
+            arguments = [Number(0, 0, context.registers.pop(0)) for _ in range(len(node.arguments))]           # TODO: Make functional.
             codeSequence, context = functionValue.execute(arguments, context)
             return self.compile(codeSequence, context)
 

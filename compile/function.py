@@ -14,11 +14,8 @@ class Function:
         self.context = context
 
     # execute :: [Number] -> Context -> Number
-    def execute(self, arguments : List[Number], parentContext : Context) -> Number:
-        context = parentContext
-        context.symbols = parentContext.symbols
+    def execute(self, arguments : List[Number], context : Context) -> Number:
         assert(len(arguments) == len(self.argumentNames))
-
         zippedArguments: List[Tuple[str, Number]] = list(zip(self.argumentNames, arguments))
         context.symbols.update(zippedArguments)
 

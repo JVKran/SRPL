@@ -1,0 +1,2 @@
+task greater with a and b contains ; 
+    flush a is_greater_than b end 
