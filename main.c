@@ -4,8 +4,8 @@
 
 #define LED_GPIO    27
 
-// extern int even(int a);
-// extern int odd(int b);
+extern int even(int a);
+extern int odd(int b);
 extern bool equals(int a, int b);
 extern bool if_test(int a);
 
@@ -21,8 +21,8 @@ int main( void ){
 
     bool all_correct = true;
     for(uint8_t i = 0; i < 200; i++){
-        // all_correct &= (even(i) == (i % 2 == 0));
-        // all_correct &= (odd(i) == i % 2);
+        all_correct &= (even(i) == (i % 2 == 0));
+        all_correct &= (odd(i) == i % 2);
         all_correct &= equals(i, i);
         all_correct &= (if_test(i) == (i == 3));
     }

@@ -34,9 +34,10 @@ class Number():
     # Equality :: Number -> Number
     def Equality(self, other : 'Number', context: Context) -> 'Number':
         scratchRegister = context.getRegister()
-        print(f"\tsub\t{self.register}, {other.register}, {self.register}")
-        print(f"\tneg\t{scratchRegister}, {self.register}")           # TODO: Request register from context.
-        print(f"\tadc\t{scratchRegister}, {scratchRegister}, {self.register}")
+        tempRegister = context.getRegister()
+        print(f"\tsub\t{tempRegister}, {other.register}, {self.register}")
+        print(f"\tneg\t{scratchRegister}, {tempRegister}")           # TODO: Request register from context.
+        print(f"\tadc\t{scratchRegister}, {scratchRegister}, {tempRegister}")
         return Number(int(self.value == other.value), self.lineNumber, scratchRegister) # Scratchregister contains result.
 
     # NonEquality :: Number -> Number    

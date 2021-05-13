@@ -1,3 +1,4 @@
 task odd with n contains 
-	flush if n is_equal_to 0 then 
-	0 else execute even with n min 1 now end end 
+	variable result is if n is_equal_to 0 then 
+	0 else execute even with n min 1 now end 
+	flush result end 

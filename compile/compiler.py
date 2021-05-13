@@ -61,7 +61,7 @@ class Compiler():
                 variableName = node.var_name
                 value = self.compile(node.value, context)
                 context.symbols[variableName] = value
-            print(f"\tmovs\tr0, {value.register}")
+            # print(f"\tmovs\tr0, {value.register}")
             return value
 
         def compileIfNode(node : IfNode, context : Context) -> Optional[Number]:
@@ -71,12 +71,14 @@ class Compiler():
             print(f"\tcmp\t{conditionIsMet.register}, #1")
             segment = context.getSegment()
             print(f"\tbne\t{segment}")                              # If condition isn't met; go to L2.
+            resReg = context.registers[0]
             res = self.compile(node.expression, context)
             print("\tb\tend")
             print(f"{segment}:")
             context.registers = availableRegisters
             if node.elseExpression:
                 self.compile(node.elseExpression, context)
+                print(f"\tmovs\t{resReg}, r0")                      # Inherent to the way SRPL deals with variables and return values.
             return res
 
         # compileWhileNode :: WhileNode -> Context -> Nothing
