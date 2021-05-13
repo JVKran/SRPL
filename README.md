@@ -5,10 +5,11 @@ Litteraly everybody working in IT has *at least touched* code once and is able t
 > **Course requirements**: Check the [course](COURSE.md) markdown file for description of meeting course requirements.
 
 ## Features
-### Shell and File
-SRPL can interpret a file, but can also be used as a shell.
-To start shell, execute ```python srpl.py``` in the commandline.
+### Shell, Interpreter and Compiler
+SRPL can interpret a file, can be used as a shell and is able to compile files to assembly.
+To start the shell, execute ```python srpl.py``` in the commandline.
 To run 'main.srpl' execute ```python srpl.py main.srpl``` in the commandline. Please note that the newlines can be replaced by semicolons and that every line in the file needs to end with a space.
+To compile an SRPL sourcefile, execute ```python srpl.py example/source/even.srpl example/source/even.asm```. The SRPL sourcecode in even.srpl will then be compiled to assembly in even.asm. 
 ### Float and Int
 The heart of this language is the number. Numbers can be an integer or a float. Furthermore, a ```true``` is seen as a Number larger than 0.
 ``` SRPL
