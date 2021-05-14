@@ -1,5 +1,5 @@
 # Compiler
-The structure of the compiler largely builds forth on that of the interpreter; that's also to be seen in the used folder and code structure and the compiled assembly code. Just as with the compiler, we have a context that holds all symbols. Except it now also contains registers and segments that can be taken and restored. The function remains practically the same since it's just a container of code. 
+The structure of the compiler largely builds forth on that of the interpreter; that's also to be seen in the used folder and code structure and the compiled assembly code. Just as with the compiler, we have a context that holds all symbols. Except it now also contains registers and labels that can be taken and restored. The function remains practically the same since it's just a container of code. 
 
 Then, the compiler. The funny thing is that the code is still kind of interpreted; calculations are still being made, variables are still being assigned and function calls still occur. The only difference is that functions, while-loops and if-statements aren't executed; instead, they're compiled into assembly code and written into a file.
 

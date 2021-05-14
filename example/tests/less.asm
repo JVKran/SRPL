@@ -4,12 +4,12 @@
 	.global less
 
 less:
-	push 	{r4, r5, r6, r7, lr}
+	push 	{ lr }
 	mov 	r2, #1
 	cmp 	r0, r1
 	blt 	.L2
 	movs	r2, #0
-.L2:
+.L2:					@Register r2 contains wether r0 is less than r1.
 end:
 	movs	r0, r2
-	pop 	{r4, r5, r6, r7, pc}
+	pop 	{ pc }

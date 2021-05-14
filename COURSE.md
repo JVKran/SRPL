@@ -34,5 +34,8 @@ Last but not least, ```filter``` has also been used. More specifically in [inter
 ### Loops
 My language supports loops, but also lambdas. Go-to statements have not and will not be implemented. For an example, checkout the main [README](README.md).
 
+### Compilation
+I've deliberately deviated from the 'requirement' of using a Makefile to compile the SRPL sourcefiles to assembly files since I've had trouble calling python from within Makefiles. Furthermore, it isn't very intuitive. As much as I'd want SRPL to seamlessly integrate with C-sourcefiles, that's not gonna happen. Hence, it's quite intuitive to use an SRPL shell command for compiling files.
+
 #### Sources
 Minsky, M. L. (1961). Recursive Unsolvability of Post’s Problem of “Tag” and other Topics in Theory of Turing Machines. Wolframscience. Published. https://www.wolframscience.com/prizes/tm23/images/Minsky.pdf

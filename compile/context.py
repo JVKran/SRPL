@@ -9,7 +9,7 @@ class Context():
         self.parent = parent
         self.symbols = {}
         self.registers = ["r0", "r1", "r2", "r3", "r4", "r5", "r6", "r7"]
-        self.segments = [".L2", ".L4", ".L6", ".L8", ".L10"]
+        self.labels = [".L2", ".L4", ".L6", ".L8", ".L10"]
 
     # getSymbol :: String -> Node | Nothing
     def getSymbol(self, name : str) -> Optional[Node]:

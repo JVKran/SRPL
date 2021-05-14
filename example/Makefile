@@ -8,7 +8,4 @@ RUN_TERMINAL    ?= # Don't run terminal
 RELATIVE        ?= ../../ATP
 BMPTK           := $(RELATIVE)/bmptk
 
-compile:
-	python ../srpl.py
-
 include         $(BMPTK)/makefile.inc
