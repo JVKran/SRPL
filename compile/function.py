@@ -15,10 +15,13 @@ class Function:
 
     # execute :: [Number] -> Context -> Number
     def execute(self, arguments : List[Number], context : Context) -> Number:
+        """ 'Execute' function
+        Funny thing here is that nothing is executed nor compiled; this is up to the
+        Cortex M0. We only add the arguments to the symboltable.
+        """
         assert(len(arguments) == len(self.argumentNames))
         zippedArguments: List[Tuple[str, Number]] = list(zip(self.argumentNames, arguments))
         context.symbols.update(zippedArguments)
-
         return self.codeSequence, context
 
     # __repr__ -> String

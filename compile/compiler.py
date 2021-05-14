@@ -121,6 +121,7 @@ class Compiler():
                 Number: The resulting number object.
             """
             availableRegister = context.registers.pop(0)
+            self.file[5].add(availableRegister)
             number = Number(node.token.stringToParse, node.token.lineNumber, availableRegister)
             self.file.append(f"\tmovs\t{availableRegister}, #{number.value}\n")
             return number
@@ -166,12 +167,13 @@ class Compiler():
                 Number: The optional result of the if and/or else expression.
             """
             conditionIsMet: Number = self.compile(node.condition, context)
-            availableRegisters = copy(context.registers)                        # Save registers since the condition is either true, or false.
+            availableRegisters = copy(context.registers)                         # Save registers since the condition is either true, or false.
             self.file.append(f"\tcmp \t{conditionIsMet.register}, #1\n")         # Hence, the registers are used in one single case; not both.
             afterIf = context.labels.pop(0)
             afterElse = context.labels.pop(0)
             self.file.append(f"\tbne \t{afterIf}\n")                             # If condition isn't met; go to label after expression to be executed when condition is true.
-            resReg = context.registers[0]
+            resultRegister = context.registers[0]
+            self.file[5].add(resultRegister)
             res = self.compile(node.expression, context)
             self.file.append(f"\tb   \t{afterElse} \n")                          # Don't also execute else-expression; so branch to label after else expression.
             self.file.append(f"{afterIf}:\n")
@@ -179,7 +181,7 @@ class Compiler():
             if node.elseExpression:
                 self.compile(node.elseExpression, context)
                 if(type(node.elseExpression) == CallNode):
-                    self.file.append(f"\tmovs\t{resReg}, r0\n")                  # Inherent to the way SRPL deals with variables and return values.
+                    self.file.append(f"\tmovs\t{resultRegister}, r0\n")          # Inherent to the way SRPL deals with variables and return values.
             self.file.append(f"{afterElse}:\n")
             return res
 
