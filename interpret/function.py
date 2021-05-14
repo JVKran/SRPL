@@ -15,6 +15,19 @@ class Function:
 
     # execute :: [Number] -> Context -> Number
     def execute(self, arguments : List[Number], parentContext : Context) -> Number:
+        """ Execute function
+        Execute the function by updating the values of all symbols in the symboltable. Note that
+        this symboltable also contains the symbols of the parent. Afther these symbols and their
+        corresponding values have been added to the table, the interpreter is ready to visit the
+        node with which the function starts.
+
+        Parameter:
+            arguments (List[Number]): The list with arguments to pass to the function.
+            parentContext (Context): The context of which the symbols should be updated.
+
+        Returns:
+            Number: The result of execution of the function.
+        """
         context = Context(self.name, parentContext)
         context.symbols = parentContext.symbols
         assert(len(arguments) == len(self.argumentNames))

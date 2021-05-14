@@ -3,12 +3,12 @@ from typing import List, Dict
 class Token():
 
     # __init__ :: String -> Integer -> Nothing
-    def __init__(self, stringToParse : str, lineNumber : int) -> None:
+    def __init__(self, stringToParse: str, lineNumber: int) -> None:
         self.stringToParse = stringToParse
         self.lineNumber = lineNumber
 
     # __new__ :: Token -> String -> Integer -> Token
-    def __new__(cls : 'Token', stringToParse : str, lineNumber : int) -> 'Token':
+    def __new__(cls: 'Token', stringToParse: str, lineNumber: int) -> 'Token':
         """ Create new token.
         This method might need some more explanation too. First of all, 
         a subclass dictionary is created. This dictionary contains the
@@ -17,6 +17,10 @@ class Token():
 
         This way, a lexed word can easily be used to create an instance 
         of the corresponding subclass. 
+
+        Parameters:
+            stringToParse (str): The string to convert to a token.
+            lineNumber (int): The number of the line in the file at which the word is located.
         """
         subclassDict: Dict[str, 'Token'] = {}
         cls.createSubclassDict(cls.__subclasses__(), subclassDict)
@@ -36,7 +40,19 @@ class Token():
 
     @staticmethod
     # createSubclassDict :: [Token] -> Dictionary -> Dictionary
-    def createSubclassDict(subclasses : List['Token'], subclassDict : Dict[str, 'Token']) -> Dict[str, 'Token']:
+    def createSubclassDict(subclasses: List['Token'], subclassDict: Dict[str, 'Token']) -> Dict[str, 'Token']:
+        """ Create subclass dictionary
+        This method returns a dictionary with the names (such as 'is', 'divided_by', etc.) as keys
+        and the subclass type as values. This dictionary can then be used for easy instantiation
+        of tokens.
+
+        Parameters:
+            subclasses (List): A list with all subclasses.
+            subclassDict (Dict): The constantly updated dictionary until all subclasses have been added.
+
+        Returns:
+            Dict: The dictionary with name and subclass pairs.
+        """
         if not subclasses:
             return subclassDict
         else: 
@@ -55,24 +71,24 @@ class IntegerToken(Token):
     name = ""
 
     # __init__ :: Integer -> Integer -> Nothing
-    def __init__(self, integer : int, lineNumber : int) -> None:
+    def __init__(self, integer: int, lineNumber: int) -> None:
         self.stringToParse = int(integer)
         self.lineNumber = lineNumber
 
     # __new__ :: Token -> String -> IntegerToken
-    def __new__(cls : Token, stringToParse : str) -> 'IntegerToken':
+    def __new__(cls: Token, stringToParse: str) -> 'IntegerToken':
         return super(cls, IntegerToken).__new__(IntegerToken)
 
 class FloatToken(Token):
     name = ""
 
     # __init__ :: Float -> Integer -> Nothing
-    def __init__(self, value : float, lineNumber : int) -> None:
+    def __init__(self, value: float, lineNumber: int) -> None:
         self.stringToParse = float(value)
         self.lineNumber = lineNumber
 
     # __new__ :: Token -> String -> FloatToken
-    def __new__(cls : Token, stringToParse : str) -> 'FloatToken':
+    def __new__(cls: Token, stringToParse: str) -> 'FloatToken':
         return super(cls, FloatToken).__new__(FloatToken)
 
 class AssignmentToken(Token):

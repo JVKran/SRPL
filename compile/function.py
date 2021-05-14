@@ -1,5 +1,5 @@
 from typing import List, Tuple
-from compile.context import Context
+from interpret.context import Context
 from compile import compiler
 from compile.number import Number
 from parse.nodes import ListNode

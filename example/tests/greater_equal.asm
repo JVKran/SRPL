@@ -8,7 +8,7 @@ greater_equal:
 	asr 	r2, r0, #31
 	lsr 	r3, r1, #31
 	cmp 	r0, r1
-	adc 	r2, r2, r3		@ Register r2 contains wether r0 is greater than or equal to r1.
+	adc 	r2, r2, r3		         @ Register r2 contains wether r0 is greater than or equal to r1.
 end:
 	movs	r0, r2
 	pop 	{ pc }

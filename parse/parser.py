@@ -9,7 +9,15 @@ C = TypeVar('C')
 
 # iterateDecorator :: Callable -> Callable
 def iterateDecorator(f: Callable[[int, List[Token], Token, A], Tuple[int, B]]) -> Callable[[int, List[Token], Token, A], Tuple[int, B]]:
-    """ Decorator to use for incrementally calling functions until a separater token is reached.  """
+    """ Iterate decorator
+    Decorator to use for incrementally calling functions until a separater token is reached. 
+    
+    Parameters:
+        f (Callable): The function to execute at every index.
+    
+    Returns:
+        Callable: The decorator to use on a function.
+    """
     def iterate(tokenIndex: int, tokenList: List[Token], separateToken: Token, *args: Tuple) -> Tuple[int, B]:
         if type(tokenList[tokenIndex]) != separateToken:
             return tokenIndex, args[0]

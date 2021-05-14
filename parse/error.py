@@ -4,7 +4,19 @@ from parse import parser
 
 # increment :: Integer -> [Token] -> Token -> String | Nothing -> Integer
 def increment(tokenIndex: int, tokenList: List[Token], expectedToken: Optional[Token] = None, message: Optional[str] = None) -> int:
-    """ Increment to next index and print error when unexpected token appears. """
+    """ Increment tokenindex
+    This function increments the token index to the next index and prints 
+    an error when an unexpected token appears. 
+    
+    Parameters:
+        tokenIndex (int): The current tokenindex that should be incremented.
+        tokenList (List): The list with tokens that should be parsed.
+        expectedToken (Optional[Token]): The type of the token that should be next.
+        message (Optional[str]): The message to print when the next token isn't equal to the expected one.
+
+    Returns:
+        int: The (if possible) incremented tokenindex.
+    """
     if expectedToken and type(tokenList[tokenIndex]) != expectedToken:
         if message == None:     # Generate default error message.
             expected = str(expectedToken.__name__).replace("Token", '').lower()

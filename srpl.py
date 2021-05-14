@@ -6,8 +6,7 @@ from parse.parser import parse
 from interpret.interpreter import visit
 from compile.compiler import Compiler
 
-import interpret
-import compile
+from interpret.context import Context
 from interpret.number import Number
 from parse.nodes import Node
 from lex.token import Token
@@ -24,7 +23,7 @@ def interpretFile(filename: str) -> str:
     Returns:
         result (str): A textual representation of the result.
     """
-    context = interpret.context.Context(f"<{filename}>")
+    context = Context(f"<{filename}>")
     tokens: List[Token] = lex(None, filename)
     ast: Node = parse(tokens)
     result: Union[List[Number], Number] = visit(ast, context)
@@ -70,7 +69,7 @@ def shell():
     by pressing CTRL+C or typing exit. Furterhmore, the user can recursively compile all
     SRPL sourcefiles by executing compile.
     """
-    context = interpret.context.Context("<shell>")
+    context = Context("<shell>")
     while True:
         text = input("SRPL  > ")
         if text == "exit": exit(0)

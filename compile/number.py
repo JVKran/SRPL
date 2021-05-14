@@ -1,6 +1,5 @@
-from typing import Union
-from compile.context import Context
-import interpret
+from typing import Union, List
+from interpret.context import Context
 
 class Number():
 
@@ -11,22 +10,22 @@ class Number():
         self.register = register
 
     # Add :: Number -> Number
-    def Add(self, other : 'Number', context: Context, file) -> 'Number':
+    def Add(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         file.append(f'\tadd \t{self.register}, {other.register}\n')
         return Number(self.value + other.value, self.lineNumber, self.register)
 
     # Substract :: Number -> Number
-    def Substract(self, other : 'Number', context: Context, file) -> 'Number':
+    def Substract(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         file.append(f'\tsub \t{self.register}, {other.register}\n')
         return Number(self.value - other.value, self.lineNumber, self.register)
 
     # Multiply :: Number -> Number
-    def Multiply(self, other : 'Number', context: Context, file) -> 'Number':
+    def Multiply(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         file.append(f'\tmul \t{self.register}, {self.register}, {other.register}\n')
         return Number(self.value * other.value, self.lineNumber, self.register)
 
     # Divide :: Number -> Number
-    def Divide(self, other : 'Number', context: Context, file) -> 'Number':
+    def Divide(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         """ Divide numbers
         The division of numbers might seem trivial, but for a Cortex M0 it isn't. Division
         isn't something that's possible with one instruction. Luckily GNU Arm Embedded Toolchain has
@@ -49,7 +48,7 @@ class Number():
         return Number(self.value / other.value, self.lineNumber, resultRegister)
 
     # Equality :: Number -> Number
-    def Equality(self, other : 'Number', context: Context, file) -> 'Number':
+    def Equality(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         """ Equal numbers
         No documentation needed (so trivial), but one quick note; there's a temporarily required
         register that can be used again later on. That's why it isn't popped from the context, 
@@ -60,21 +59,23 @@ class Number():
         file[5].add(tempRegister)
         file.append(f"\tsub \t{tempRegister}, {other.register}, {self.register}\n")
         file.append(f"\tneg \t{resultRegister}, {tempRegister}\n")
-        file.append(f"\tadc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t@ Register {resultRegister} contains wether {self.register} and {other.register} are equal.\n")
+        file.append(f"\tadc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t \
+        @ Register {resultRegister} contains wether {self.register} and {other.register} are equal.\n")
         return Number(int(self.value == other.value), self.lineNumber, resultRegister)
 
     # NonEquality :: Number -> Number    
-    def NonEquality(self, other : 'Number', context: Context, file) -> 'Number':
+    def NonEquality(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         resultRegister = context.registers.pop(0)
         tempRegister = context.registers[0]
         file[5].add(tempRegister)
         file.append(f"\tsub \t{resultRegister}, {other.register}, {self.register}\n")
         file.append(f"\tsub \t{tempRegister}, {resultRegister}, #1\n")
-        file.append(f"\tsbc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t@ Register {resultRegister} contains wether {self.register} and {other.register} are not equal.\n")
+        file.append(f"\tsbc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t \
+        @ Register {resultRegister} contains wether {self.register} and {other.register} are not equal.\n")
         return Number(int(self.value != other.value), self.lineNumber, resultRegister)
 
     # Less :: Number -> Number
-    def Less(self, other : 'Number', context: Context, file) -> 'Number':
+    def Less(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         """ Is number less
         Again a trivial function, but the first one with this structure. The label and branching to
         that label is used to only place a zero in the result(scratch) register when it isn't less
@@ -91,7 +92,7 @@ class Number():
         return Number(int(self.value < other.value), self.lineNumber, resultRegister)
 
     # Greater :: Number -> Number
-    def Greater(self, other : 'Number', context: Context, file) -> 'Number':
+    def Greater(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         """" Scratch register contains 1 afterwards when greater. """
         resultRegister = context.registers.pop(0)
         file[5].add(resultRegister)
@@ -104,29 +105,31 @@ class Number():
         return Number(int(self.value > other.value), self.lineNumber, resultRegister)
 
     # LessEqual :: Number -> Number
-    def LessEqual(self, other : 'Number', context: Context, file) -> 'Number':
+    def LessEqual(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         resultRegister = context.registers.pop(0)
         tempRegister = context.registers[0]
         file[5].add(tempRegister)
         file.append(f"\tlsr \t{resultRegister}, {self.register}, #31\n")
         file.append(f"\tasr \t{tempRegister}, {other.register}, #31\n")
         file.append(f"\tcmp \t{other.register}, {self.register}\n")
-        file.append(f"\tadc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t@ Register {resultRegister} contains wether {self.register} is less than or equal to {other.register}.\n")
+        file.append(f"\tadc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t \
+        @ Register {resultRegister} contains wether {self.register} is less than or equal to {other.register}.\n")
         return Number(int(self.value <= other.value), self.lineNumber, resultRegister)
 
     # GreaterEqual :: Number -> Number
-    def GreaterEqual(self, other : 'Number', context: Context, file) -> 'Number':
+    def GreaterEqual(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         resultRegister = context.registers.pop(0)
         tempRegister = context.registers[0]
         file[5].add(tempRegister)
         file.append(f"\tasr \t{resultRegister}, {self.register}, #31\n")
         file.append(f"\tlsr \t{tempRegister}, {other.register}, #31\n")
         file.append(f"\tcmp \t{self.register}, {other.register}\n")
-        file.append(f"\tadc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t@ Register {resultRegister} contains wether {self.register} is greater than or equal to {other.register}.\n")
+        file.append(f"\tadc \t{resultRegister}, {resultRegister}, {tempRegister}\t\t \
+        @ Register {resultRegister} contains wether {self.register} is greater than or equal to {other.register}.\n")
         return Number(int(self.value >= other.value), self.lineNumber, resultRegister)
 
     # And :: Number -> Number
-    def And(self, other : 'Number', context: Context, file) -> 'Number':
+    def And(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         resultRegister = context.registers.pop(0)
         firstRegister = context.registers[0]
         otherRegister = context.registers[1]
@@ -136,12 +139,12 @@ class Number():
         file.append(f"\tasr \t{firstRegister}, {other.register}, #31\n")
         file.append(f"\tsub \t{otherRegister}, {firstRegister}, {other.register}\n")
         file.append(f"\tand \t{resultRegister}, {resultRegister}, {otherRegister}\n")
-        file.append(f"\tlsr \t{resultRegister}, {resultRegister}, #31\t\t@ Register {resultRegister} contains wether {self.register} and {other.register} are both larger than 0.\n")
+        file.append(f"\tlsr \t{resultRegister}, {resultRegister}, #31\t\t \
+        @ Register {resultRegister} contains wether {self.register} and {other.register} are both larger than 0.\n")
         return Number(int(self.value and other.value), self.lineNumber, resultRegister)
 
     # Or :: Number -> Number
-    def Or(self, other : 'Number', context: Context, file) -> 'Number':
-        print(context.registers)
+    def Or(self, other : 'Number', context: Context, file: List[str]) -> 'Number':
         resultRegister = context.registers.pop(0)
         firstRegister = context.registers[0]
         otherRegister = context.registers[1]
@@ -151,7 +154,8 @@ class Number():
         file.append(f"\tasr \t{firstRegister}, {other.register}, #31\n")
         file.append(f"\tsub \t{otherRegister}, {firstRegister}, {other.register}\n")
         file.append(f"\torr \t{resultRegister}, {resultRegister}, {otherRegister}\n")
-        file.append(f"\tlsr \t{resultRegister}, {resultRegister}, #31\t\t@ Register {resultRegister} contains wether {self.register} or {other.register} is larger than 0.\n")
+        file.append(f"\tlsr \t{resultRegister}, {resultRegister}, #31\t\t \
+        @ Register {resultRegister} contains wether {self.register} or {other.register} is larger than 0.\n")
         return Number(int(self.value or other.value), self.lineNumber, resultRegister)
 
     # __bool__ -> Boolean

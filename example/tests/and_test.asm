@@ -15,13 +15,13 @@ and_test:
 	lsr 	r4, r0, #31
 	asr 	r5, r3, #31
 	cmp 	r3, r0
-	adc 	r4, r4, r5		@ Register r4 contains wether r0 is less than or equal to r3.
+	adc 	r4, r4, r5		         @ Register r4 contains wether r0 is less than or equal to r3.
 	asr 	r6, r2, #31
 	sub 	r5, r6, r2
 	asr 	r6, r4, #31
 	sub 	r7, r6, r4
 	and 	r5, r5, r7
-	lsr 	r5, r5, #31		@ Register r5 contains wether r2 and r4 are both larger than 0.
+	lsr 	r5, r5, #31		         @ Register r5 contains wether r2 and r4 are both larger than 0.
 end:
 	movs	r0, r5
 	pop 	{ r4, r5, r6, r7, pc }

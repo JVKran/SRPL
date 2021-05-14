@@ -5,7 +5,7 @@ from itertools import chain
 from copy import copy
 
 from parse.nodes import *
-from compile.context import Context
+from interpret.context import Context
 from compile.number import Number
 from compile.function import Function
 from lex.token import *
@@ -27,10 +27,8 @@ class Compiler():
             targetFile (str): The name of the assembly targetfile to write to.
         """
         self.context = Context(f"<{sourceFile}>")
-        self.function = function
         self.targetFile = targetFile
         print("Compiling \'" + sourceFile + "\' to \'" + targetFile + "\'.")
-
 
         self.file: List[str] = []
         self.file.append("\t.cpu cortex-m0\n")
@@ -38,7 +36,7 @@ class Compiler():
         self.file.append("\t.align 2\n")
         self.file.append(f"\t.global {function.name}\n\n")
         self.file.append(f'{function.name}:\n')
-        self.file.append(set())
+        self.file.append(set())             # Create set at index 5 for used registers.
 
     def __del__(self):
         """ Destruct compiler
@@ -54,7 +52,7 @@ class Compiler():
             usedRegisters: str = registers[0:highestRegisterIndex + 1]
         except ValueError:
             usedRegisters = []
-        usedRegisters: str = ', '.join(usedRegisters)           # Create comma separated string with registers.
+        usedRegisters: str = ', '.join(usedRegisters)  # Create comma separated string with registers.
         if len(usedRegisters) > 0:
             registersToPop = f"\tpop \t{{ {usedRegisters}, pc }}"
             registersToPush = f"\tpush \t{{ {usedRegisters}, lr }}\n"
@@ -65,8 +63,8 @@ class Compiler():
         self.file[5] = registersToPush
 
         file = open(self.targetFile, "w")
-        for line in self.file:                                  # TODO: Replace with map
-            file.write(line)
+        self.file = map(lambda x:x, self.file)
+        file.writelines(self.file)
         file.close()
     
     def compile(self, node: Node, context: Optional[Context] = None) -> Optional[Union[Number, List[Number], Function]]:
@@ -219,7 +217,7 @@ class Compiler():
             """
             functionValue = Function(node.name, node.codeSequence, node.arguments, context)
             context.symbols[node.name] = functionValue
-            arguments = [Number(0, 0, context.registers.pop(0)) for _ in range(len(node.arguments))]           # TODO: Make functional.
+            arguments = list(map(lambda _: Number(0, 0, context.registers.pop(0)), node.arguments))
             codeSequence, context = functionValue.execute(arguments, context)
             return self.compile(codeSequence, context)
 
@@ -242,14 +240,6 @@ class Compiler():
         # compileListNode :: ListNode -> Context -> Number | [Number]
         def compileListNode(node: ListNode, context: Context) -> Union[Number, List[Number]]:
             """ Compile list node.
-            This method might require some more explanation. This method determines
-            the result of all nodes in the 'list'. These lists can occur since functions,
-            but also files, are allowed to return 'flush' multiple values. So, for example,
-            when a function returns once, there will only be one element in the returned list.
-            But when a function doesn't return at all, the results of all nodes will be in 
-            the list. Same goes for functions or files returning multiple times; a list
-            will be returned.
-
             Functions exactly the same as with the interpreter; only required for compatibilty
             with other code since the parser still returns ListNodes.
 
