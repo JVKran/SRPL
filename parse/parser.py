@@ -28,7 +28,17 @@ def iterateDecorator(f: Callable[[int, List[Token], Token, A], Tuple[int, B]]) -
 
 # factor :: [Token] -> Integer -> Tuple
 def factor(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Union[VariableNode, NumberNode]]:
-    """ Returns the token index and a factor; a variable or a number (integer or float). """
+    """ Parse factor
+    This function parses a factor; either a variable or a literal integer or float.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: A variable- or numbernode.
+    """
     currentToken = tokenList[tokenIndex]
     if type(currentToken) == VariableToken:
         tokenIndex = increment(tokenIndex, tokenList)
@@ -39,23 +49,66 @@ def factor(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Union[Variab
 
 # term :: [Token] -> Integer -> Tuple
 def term(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Union[VariableNode, NumberNode]]:
-    """ Returns the token index and the result of a term; a variable or number. """
+    """ Parse term
+    This function parses the result of a term. That's either a variable or a number.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: The result of a term; a variable- or numbernode. 
+    """
     return binaryOperator(tokenList, factor, (MultiplyToken, DivideToken), tokenIndex)
 
 # comparison :: [Token] -> Integer -> Tuple
 def comparison(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Union[VariableNode, NumberNode, OperatorNode]]:
-    """ Returns the token index and (a part of) an arithmetic expression; a variable, number or nodes with operator (if partial). """
+    """ Parse comparisong
+    This function returns (a part of) an arithmetic expression. This can either be a
+    variable, number or operator node.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: (A part of) an arithmetic expression; a variable, number or nodes with operator (if partial). 
+    """
     return binaryOperator(tokenList, arithmeticExpression, 
             (EqualityToken, NonEqualityToken, LessToken, GreaterToken, LessEqualToken, GreaterEqualToken), tokenIndex)
 
 # arithmeticExpression :: [Token] -> Integer -> Tuple
 def arithmeticExpression(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Union[VariableNode, NumberNode, OperatorNode]]:
-    """ Returns the token index and (a part of) the result of an arithmetic expression; a variable, number or nodes with operator (if partial). """
+    """ Parse arithmetic expression
+    This function parses an arithmetic expression and returns the result of this expression. This
+    can either be a variable, number or operator node.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index. 
+        Node: (A part of) the result of an arithmetic expression; a variable, number or nodes with operator (if partial). 
+    """
     return binaryOperator(tokenList, term, (AddToken, SubstractToken), tokenIndex)
 
 # expression :: [Token] -> Integer -> Tuple
 def expression(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Node]:
-    """ Returns the (partial) result of an expression; can be ay kind of node. """
+    """ Parse an expression
+    This function parses an expression in the broadest term possible. Can be either of a variable,
+    if-statement, while-loop, function definition, function call or an operator.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: A (partial) result of an expression.
+    """
     currentToken = tokenList[tokenIndex]
 
     if type(currentToken) == VariableKeywordToken:
@@ -74,7 +127,17 @@ def expression(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Node]:
 
 # ifExpr :: [Token] -> Integer -> Tuple
 def ifExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, IfNode]:
-    """ Returns an IfNode with the condition, expression and optional else expression. """
+    """ Parse if-statement
+    This function parses an if-statement and (when given) also the else-expression.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        IfNode: An IfNode with the condition, expression and optional else expression. 
+    """
     tokenIndex = increment(tokenIndex, tokenList, IfToken)
     tokenIndex, condition = expression(tokenList, tokenIndex)
     tokenIndex = increment(tokenIndex, tokenList, ThenToken)
@@ -97,7 +160,17 @@ def ifExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, IfNode]:
 
 # whileExpr :: [Token] -> Integer -> Tuple
 def whileExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, WhileNode]:
-    """ Returns a WhileNode with the expression to execute as long as the condition is met """
+    """ Parse while-loop
+    This function parses a while-loop with corresponding condition.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        WhileNode: A WhileNode with the expression to execute as long as the condition is met.
+    """
     tokenIndex = increment(tokenIndex, tokenList, WhileToken)
     tokenIndex, condition = expression(tokenList, tokenIndex)
     tokenIndex = increment(tokenIndex, tokenList, ThenToken)
@@ -113,7 +186,16 @@ def whileExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, WhileNode
 
 # variable :: [Token] -> Integer -> Tuple
 def variable(tokenList : List[Token], tokenIndex : int) -> Tuple[int, VariableNode]:
-    """ Returns a VariableNode with the name and value or expression for determining value. """
+    """ Parse variables
+    This function parses variables and their assignments.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        VariableNode: a VariableNode with the name and value or expression for determining value. """
     tokenIndex = increment(tokenIndex, tokenList)
     increment(tokenIndex, tokenList, VariableToken)
     variableName = tokenList[tokenIndex].stringToParse
@@ -124,7 +206,18 @@ def variable(tokenList : List[Token], tokenIndex : int) -> Tuple[int, VariableNo
 
 # functionCall :: [Token] -> Integer -> Tuple
 def functionCall(tokenList : List[Token], tokenIndex : int) -> Tuple[int, CallNode]:
-    """ Returns a CallNode with the given name and arguments to execute it with. """
+    """ Parse functioncall
+    This function parses a functioncall with corresponding arguments and 
+    their values.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        CallNode: A CallNode with the given name and arguments to execute it with. 
+    """
 
     @iterateDecorator
     # parseArguments :: Integer -> [Token] -> Token -> List -> Tuple
@@ -154,7 +247,18 @@ def functionCall(tokenList : List[Token], tokenIndex : int) -> Tuple[int, CallNo
 
 # functionDef :: [Token] -> Integer -> Tuple
 def functionDef(tokenList : List[Token], tokenIndex : int) -> Tuple[int, FunctionNode]:
-    """ Returns a FunctionNode with name, argument names and sequence to execute on execution. """
+    """ Parse function definition
+    This function parses a function definition including their corresponding
+    argumentnames and codeSequences.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        FunctioNode: A FunctionNode with name, argument names and sequence to execute on execution. 
+    """
 
     @iterateDecorator
     def parseArguments(tokenIndex: int, tokenList: List[Token], separateToken: Token, arguments: List[Node] = []) -> Tuple[int, List[Node]]:
@@ -184,9 +288,9 @@ def functionDef(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Functio
     tokenIndex = increment(tokenIndex, tokenList, FunctionEndToken)
     return tokenIndex, FunctionNode(functionName, arguments, expr)
 
-# statements :: [Token] -> Integer -> List
+# statements :: [Token] -> Integer -> [Node] -> Tuple
 def statements(tokenList : List[Token], tokenIndex : int, statings: List[Node] = None) -> Tuple[int, Node]:
-    """ Get statements
+    """ Parse statements
     This function might be described as the heart of the parser for multi-line statements.
     Hence, it's especially useful for interpreting files; it splits the entire file into
     multiple multi-line statements. Each of those statements is executed; one by one.
@@ -194,6 +298,14 @@ def statements(tokenList : List[Token], tokenIndex : int, statings: List[Node] =
     So actually, the parser for files is the same as the parser used for the shell; the file
     contains multiple entries that can also be typed in the shell one by one. It keeps parsing
     the file until there are no more lines to be skipped.
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: The List(Root)Node with all statements to execute.
     """
 
     @iterateDecorator
@@ -216,7 +328,17 @@ def statements(tokenList : List[Token], tokenIndex : int, statings: List[Node] =
 
 # statement :: [Token] -> Integer -> Tuple
 def statement(tokenList: List[Token], tokenIndex: int) -> Tuple[int, Node]:
-    """ Gets called by statements() to get each individual statement. """
+    """ Parse statement
+    Gets called by statements() to get each individual statement. 
+    
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: The parsed statement (expression).
+    """
     if type(tokenList[tokenIndex]) == ReturnToken:
         tokenIndex = increment(tokenIndex, tokenList)
         tokenIndex, expr = expression(tokenList, tokenIndex)
@@ -227,7 +349,19 @@ def statement(tokenList: List[Token], tokenIndex: int) -> Tuple[int, Node]:
 
 # binaryOperator :: [Token] -> Callable -> [Token] -> Integer -> Tuple
 def binaryOperator(tokenList : List[Token], f : Callable[[A, B], C], operations : List[Token], tokenIndex : int) -> Tuple[int, Union[VariableNode, NumberNode, OperatorNode]]:
-    """ Creates OperatorNode with operator and left and right node to execute it on. """
+    """ Parse binary operator 
+    Creates OperatorNode with operator and left and right node to execute it on. 
+    
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        f (Callable): The function to execute for getting left and right node on which operator should be executed.
+        operations (List): The list with operators which this function is 'allowed' to be.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        Node: The operator-, left- or right node.
+    """
     try:
         tokenIndex, left = f(tokenList, tokenIndex)
     except TypeError:
@@ -247,4 +381,13 @@ def binaryOperator(tokenList : List[Token], f : Callable[[A, B], C], operations 
     return traverse(tokenIndex, left)
 
 def parse(tokens: List[Token]) -> Node:
+    """ Parse tokenlist
+    Parse the passed tokenlist.
+
+    Parameters:
+        tokens (List): The list with tokens to parse.
+
+    Returns:
+        Node: The Root node of the AST.
+    """
     return statements(tokens, 0)[1]
