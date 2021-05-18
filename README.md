@@ -10,6 +10,14 @@ SRPL can interpret a file, can be used as a shell and is able to compile files t
 To start the shell, execute ```python srpl.py``` in the commandline.
 To run 'main.srpl' execute ```python srpl.py main.srpl``` in the commandline. Please note that the newlines can be replaced by semicolons and that every line in the file needs to end with a space.
 To compile an SRPL sourcefile, execute ```python srpl.py example/source/even.srpl example/source/even.asm```. The SRPL sourcecode in even.srpl will then be compiled to assembly in even.asm. 
+
+### Compiler
+The compiler has been written with compatibility and simplicity in mind; it's very efficient most of the times, but for example the checking of conditions is done in such a way that it's easier to read than it is fast. This checking of conditions is done by first storing the boolean representation in a register and then checking for it being larger than 0. This could also have been done with a more complex branch statement, but hey; the method described above is very suited to the ideology behind SRPL.
+
+Furthermore, only the really used registers are pushed to the stack and there's a neat optimization that recognizes registers being used in either case of an if-statements. This results in registers being allowed to be used in both the if- and else-statement. Other than that, there's one more feature that's very suited to SRPL; informative comment generation. This allows for easy checks of the compiled assembly files.
+
+Last but not least, the compiler has been tested extensively with the help of unit-tests. These can be found in the [example directory](example).
+
 ### Float and Int
 The heart of this language is the number. Numbers can be an integer or a float. Furthermore, a ```true``` is seen as a Number larger than 0.
 ``` SRPL

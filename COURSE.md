@@ -37,5 +37,15 @@ My language supports loops, but also lambdas. Go-to statements have not and will
 ### Compilation
 I've deliberately deviated from the 'requirement' of using a Makefile to compile the SRPL sourcefiles to assembly files since I've had trouble calling python from within Makefiles. Furthermore, it isn't very intuitive. As much as I'd want SRPL to seamlessly integrate with C-sourcefiles, that's not gonna happen. Hence, it's quite intuitive to use an SRPL shell command for compiling files.
 
+### Informative comment generation
+The compiler doesn't only compile SRPL sources to assembly, but also provides the user with informative comments. This allows for easy 'interpretation' of the compiles assembly files.
+
+### Register optimizations
+Only really used registers are pushed to and popped from the stack. This is done by just compiling the SRPL source code and then later on writing the push and pop statements in the assembly file.
+
+Furthermore, registers that're used in the body of an if-statement are also available for the body of the (optional) else-statement. Afterwards, only the registers that're used in neither of them are still available.
+
+Since variables are tied to a register, incrementing a variable three times only results in the use of 1 single register.
+
 #### Sources
 Minsky, M. L. (1961). Recursive Unsolvability of Post’s Problem of “Tag” and other Topics in Theory of Turing Machines. Wolframscience. Published. https://www.wolframscience.com/prizes/tm23/images/Minsky.pdf
