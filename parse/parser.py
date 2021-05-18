@@ -257,7 +257,7 @@ def functionDef(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Functio
     
     Returns:
         int: The incremented token index.
-        FunctioNode: A FunctionNode with name, argument names and sequence to execute on execution. 
+        FunctionNode: A FunctionNode with name, argument names and sequence to execute on execution. 
     """
 
     @iterateDecorator

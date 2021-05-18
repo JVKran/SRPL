@@ -121,7 +121,7 @@ class Compiler():
             availableRegister = context.registers.pop(0)
             self.file[5].add(availableRegister)
             number = Number(node.token.stringToParse, node.token.lineNumber, availableRegister)
-            self.file.append(f"\tmovs\t{availableRegister}, #{number.value}\n")
+            self.file.append(f"\tmovs\t{availableRegister}, #{number.value}\t\t\t\t\t@ Register {availableRegister} contains {number.value}.\n")
             return number
 
         # compileVariableNode :: VariableNode -> Context -> Number
@@ -165,21 +165,24 @@ class Compiler():
                 Number: The optional result of the if and/or else expression.
             """
             conditionIsMet: Number = self.compile(node.condition, context)
-            availableRegisters = copy(context.registers)                         # Save registers since the condition is either true, or false.
-            self.file.append(f"\tcmp \t{conditionIsMet.register}, #1\n")         # Hence, the registers are used in one single case; not both.
+            availableRegisters = copy(context.registers)                        # Save registers since the condition is either true, or false. Hence, the registers are used in one single case; not both.
+            self.file.append(f"\tcmp \t{conditionIsMet.register}, #1 \
+            \t\t@ Register {conditionIsMet.register} contains wether condition is met.\n")
             afterIf = context.labels.pop(0)
             afterElse = context.labels.pop(0)
-            self.file.append(f"\tbne \t{afterIf}\n")                             # If condition isn't met; go to label after expression to be executed when condition is true.
+            self.file.append(f"\tbne \t{afterIf}\
+            \t\t\t@ Branch to {afterIf} if condition isn't met.\n")              # If condition isn't met; go to label after expression to be executed when condition is true.
             resultRegister = context.registers[0]
             self.file[5].add(resultRegister)
             res = self.compile(node.expression, context)
-            self.file.append(f"\tb   \t{afterElse} \n")                          # Don't also execute else-expression; so branch to label after else expression.
+            self.file.append(f"\tb   \t{afterElse} \
+            \t\t@ Branch to end of if/else-statement.\n")                        # Don't also execute else-expression; so branch to label after else expression.
             self.file.append(f"{afterIf}:\n")
             context.registers = availableRegisters
             if node.elseExpression:
                 self.compile(node.elseExpression, context)
                 if(type(node.elseExpression) == CallNode):
-                    self.file.append(f"\tmovs\t{resultRegister}, r0\n")          # Inherent to the way SRPL deals with variables and return values.
+                    self.file.append(f"\tmovs\t{resultRegister}, r0\n")         # Inherent to the way SRPL deals with variables and return values.
             self.file.append(f"{afterElse}:\n")
             return res
 
@@ -197,8 +200,10 @@ class Compiler():
             self.file.append("loop:\n")
             conditionIsMet: Number = self.compile(node.condition, context)
             self.compile(node.codeSequence, context)
-            self.file.append(f"\tcmp \t{conditionIsMet.register}, #1\n")
-            self.file.append(f"\tbeq \tloop\n")                                  # If condition is met; go back to loop label.
+            self.file.append(f"\tcmp \t{conditionIsMet.register}, #1\
+            \t\t@ Register {conditionIsMet.register} contains wether condition is met or not.\n")
+            self.file.append(f"\tbeq \tloop\
+            \t\t@ Branch to loop when condition is met.\n")                                  # If condition is met; go back to loop label.
 
         # compileFunctionNode :: FunctionNode -> Context -> Function
         def compileFunctionNode(node: FunctionNode, context: Context) -> Function:
@@ -284,7 +289,9 @@ class Compiler():
             if node.nodeToReturn:
                 res = self.compile(node.nodeToReturn, context)
                 self.file.append("end:\n")
-                self.file.append(f"\tmovs\tr0, {res.register}\n")
+                if res.register != "r0":
+                    self.file.append(f"\tmovs\tr0, {res.register}\
+                    \t@ Move contents of {res.register} to r0 for returning.\n")
                 return res
 
         functionName: str = f'compile{type(node).__name__}'                         # Determine name of function to call.

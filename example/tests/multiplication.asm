@@ -5,7 +5,6 @@
 
 multiply:
 	push 	{ lr }
-	mul 	r0, r0, r1
+	mul 	r0, r0, r1         		@ Register r0 contains result from multiplication of registers r0 and r1.
 end:
-	movs	r0, r0
 	pop 	{ pc }
