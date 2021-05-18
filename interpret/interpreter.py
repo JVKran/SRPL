@@ -1,3 +1,4 @@
+from os import defpath
 from typing import TypeVar, Union, Optional, List
 from operator import is_not, add
 from functools import partial, reduce
@@ -112,6 +113,26 @@ def visit(node : Node, context : Context) -> Union[Number, List[Number]]:
             visit(node.codeSequence, context)           # Execute while-body once.
             return visitWhileNode(node, context)        # Then check for meeting condition.
         return
+
+    def visitForNode(node: ForNode, context: Context) -> None:
+        startValue = visit(node.startNode, context)
+        endValue = visit(node.endNode, context)
+        if node.stepNode:
+            stepValue = visit(node.stepNode, context).value
+        else:
+            stepValue = 1
+        
+        i = startValue.value
+
+        if stepValue >= 0:
+            condition = lambda: i < endValue.value
+        else:
+            condition = lambda: i > endValue.value
+
+        while condition():
+            context.symbols.update({node.varNameToken: Number(i, None)})
+            i += stepValue
+            visit(node.bodyNode, context)
 
     # visitFunctionNode :: FunctionNode -> Context -> Function
     def visitFunctionNode(node : FunctionNode, context : Context) -> Function:

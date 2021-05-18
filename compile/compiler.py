@@ -205,6 +205,26 @@ class Compiler():
             self.file.append(f"\tbeq \tloop\
             \t\t@ Branch to loop when condition is met.\n")                                  # If condition is met; go back to loop label.
 
+        def compileForNode(node: ForNode, context: Context) -> None:
+            startValue = self.compile(node.startNode, context)
+            endValue = self.compile(node.endNode, context)
+            if node.stepNode:
+                stepValue = self.compile(node.stepNode, context).value
+            else:
+                stepValue = 1
+            
+            i = startValue.value
+
+            if stepValue >= 0:
+                condition = lambda: i < endValue.value
+            else:
+                condition = lambda: i > endValue.value
+
+            while condition():
+                context.symbols.update({node.varNameToken: Number(i, None)})
+                i += stepValue
+                self.compile(node.bodyNode, context)
+
         # compileFunctionNode :: FunctionNode -> Context -> Function
         def compileFunctionNode(node: FunctionNode, context: Context) -> Function:
             """ Compile function

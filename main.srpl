@@ -45,6 +45,15 @@ task sommig with n contains
 		variable result is result plus n 
 		variable n is n min 1 end 
 	flush result end 
-
+ 
 flush execute sommig with 5 now 
 flush execute sommig with 34 now 
+ 
+task fact with n contains 
+	variable result is 1 
+	for variable i is 2 to 6 then 
+		variable result is result multiplied_by i end 
+	flush result end 
+
+flush execute fact with 5 now 
+flush i 

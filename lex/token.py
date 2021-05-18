@@ -142,6 +142,15 @@ class ElseToken(Token):
 class WhileToken(Token):
     name = "while"
 
+class ForToken(Token):
+    name = "for"
+
+class ToToken(Token):
+    name = "to"
+
+class StepToken(Token):
+    name = "step"
+
 class ReturnToken(Token):
     name = "flush"
 

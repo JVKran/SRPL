@@ -121,6 +121,8 @@ def expression(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Node]:
         tokenIndex, node = functionDef(tokenList, tokenIndex)
     elif type(currentToken) == ExecuteToken:
         tokenIndex, node = functionCall(tokenList, tokenIndex)
+    elif type(currentToken) == ForToken:
+        tokenIndex, node = forExpr(tokenList, tokenIndex)
     else:
         tokenIndex, node = binaryOperator(tokenList, comparison, (AndToken, OrToken), tokenIndex)
     return tokenIndex, node
@@ -183,6 +185,29 @@ def whileExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, WhileNode
         tokenIndex, expr = expression(tokenList, tokenIndex)
         tokenIndex = increment(tokenIndex, tokenList, FunctionEndToken)
         return tokenIndex, WhileNode(condition, expr)
+
+def forExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, ForNode]:
+    tokenIndex = increment(tokenIndex, tokenList, ForToken)
+    tokenIndex, startNode = variable(tokenList, tokenIndex)
+    tokenIndex = increment(tokenIndex, tokenList, ToToken)
+    tokenIndex, endValue = expression(tokenList, tokenIndex)
+
+    if type(tokenList[tokenIndex]) == StepToken:
+        tokenIndex = increment(tokenIndex, tokenList)
+        tokenIndex, stepValue = expression(tokenList, tokenIndex)
+    else:
+        stepValue = None
+
+    tokenIndex = increment(tokenIndex, tokenList, ThenToken)
+    if type(tokenList[tokenIndex]) == NewlineToken:
+        tokenIndex = increment(tokenIndex, tokenList)
+        tokenIndex, _statements = statements(tokenList, tokenIndex)
+        tokenIndex = increment(tokenIndex, tokenList, FunctionEndToken)
+        return tokenIndex, ForNode(startNode.var_name, startNode, endValue, stepValue, _statements)
+    else:
+        tokenIndex, expr = expression(tokenList, tokenIndex)
+        tokenIndex = increment(tokenIndex, tokenList, FunctionEndToken)
+        return tokenIndex, ForNode(startNode.var_name, startNode, endValue, stepValue, expr)
 
 # variable :: [Token] -> Integer -> Tuple
 def variable(tokenList : List[Token], tokenIndex : int) -> Tuple[int, VariableNode]:

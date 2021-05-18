@@ -49,4 +49,11 @@ class WhileNode(NamedTuple):
     condition: 'Node'
     codeSequence: 'Node'
 
+class ForNode(NamedTuple):
+    varNameToken: 'Token'
+    startNode: 'Node'
+    endNode: 'Node'
+    stepNode: 'Node'
+    bodyNode: 'Node'
+
 Node = Union[FunctionNode, CallNode, NumberNode, OperatorNode, VariableNode, IfNode, WhileNode, ListNode, ReturnNode]

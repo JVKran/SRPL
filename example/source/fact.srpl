@@ -1,0 +1,5 @@
+task fact with n contains 
+	variable result is 1 
+	for variable i is 1 to 6 then 
+		variable result is result multiplied_by i end 
+	flush result end 

@@ -8,6 +8,13 @@ bool or_test_desired(uint8_t a){
     return a >= 150 || a < 50;
 }
 
+uint16_t factorial(uint8_t n){
+    int res = 1;
+    for (uint8_t i = 2; i <= n; i++)
+        res *= i;
+    return res;
+}
+
 bool run_tests(){
     bool all_correct = true;
     all_correct &= (summy(34) == 595);
@@ -25,6 +32,7 @@ bool run_tests(){
         all_correct &= (or_test(i) == or_test_desired(i));
         all_correct &= (divide(i, (200 - i) + 1) == i / ((200 - i) + 1));
         all_correct &= (multiply(i, i) == i * i);
+        all_correct &= (fact(i) == factorial(i));
     }
     return all_correct;
 }
