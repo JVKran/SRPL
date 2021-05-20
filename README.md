@@ -96,10 +96,15 @@ Error handling is also a little less conventional. It is able to determine when 
 
 ## Example
 ``` SRPL
+
 task add with a and b contains 
 	flush a plus b end 
 
-flush execute add with 3 & 5 now 
+variable result is execute add with 3 & 5 now 
+variable sum is add 
+variable otherResult is execute sum with 4 & 5 now 
+flush result 
+flush otherResult 
 
 variable i is 1 
 while i is_less_than 5 then 
@@ -115,15 +120,49 @@ task even with n contains
 	1 else execute odd with n min 1 now end end 
 
 variable evenCopy is even 
-flush execute even with 4 now 
-flush execute evenCopy with 5 now 
 
-task summy with n contains 
+flush execute even with 4 now 
+flush execute odd with 4 now 
+flush execute evenCopy with 3 now 
+flush execute odd with 3 now 
+
+task apply with number and lambda contains 
+	execute lambda with number now end 
+
+task makeTwenty with n contains 
+	variable n is 20 
+	flush n end 
+
+variable wasntTwenty is 18 
+variable wasntTwenty is execute apply with wastnZero & makeTwenty now 
+flush wasntTwenty 
+
+task sommig with n contains 
 	variable result is 0 
 	while n is_greater_than_or_equal_to 1 then 
 		variable result is result plus n 
 		variable n is n min 1 end 
 	flush result end 
+ 
+flush execute sommig with 5 now 
+flush execute sommig with 34 now 
+ 
+task fact with n contains 
+	variable result is 1 
+	for variable i is 2 to n plus 1 then 
+		variable result is result multiplied_by i end 
+	flush result end 
 
-flush execute summy with 5 now 
+flush execute fact with 5 now 
+flush i 
+
+task neg_for with n contains 
+	variable result is 1 
+	for variable i is 10 to 0 step 0 min 2 then 
+		variable result is result plus i end 
+	flush result end 
+
+flush execute neg_for with 5 now 
 ```
+
+> **Output**: ```[8, 9, 5, 1, 0, 0, 1, 20, 15, 595, 120, 5, 31]```
