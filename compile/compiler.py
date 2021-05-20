@@ -209,21 +209,41 @@ class Compiler():
             startValue = self.compile(node.startNode, context)
             endValue = self.compile(node.endNode, context)
             if node.stepNode:
-                stepValue = self.compile(node.stepNode, context).value
+                stepNode = self.compile(node.stepNode, context)
             else:
-                stepValue = 1
+                stepNode = Number(1, None, context.registers.pop(0))
+                self.file.append(f"\tmovs\t{stepNode.register}, #1\n")                             # Step-size defaults to 1.
             
-            i = startValue.value
-
-            if stepValue >= 0:
-                condition = lambda: i < endValue.value
+            if stepNode.value >= 0:
+                self.file.append(f"\tcmp \t{startValue.register}, #1\n")
+                self.file.append(f"\tble \tend\n")
             else:
-                condition = lambda: i > endValue.value
+                self.file.append(f"\tcmp \t{startValue.register}, #0\n")
+                self.file.append(f"\tblt \tend\n")
 
-            while condition():
-                context.symbols.update({node.varNameToken: Number(i, None)})
-                i += stepValue
-                self.compile(node.bodyNode, context)
+            self.file.append("loop:\n")
+            self.compile(node.bodyNode, context)
+            self.file.append(f"\tadd \t{startValue.register}, {stepNode.register}\
+                \t@ Increment counter with stepsize.\n")                                             # Increment counter with stepsize.                                          # Increment counter with stepsize.
+            self.file.append(f"\tcmp \t{startValue.register}, {endValue.register}\
+                \t@ Compare counter with value to iterate towards.\n")
+            if stepNode.value >= 0:
+                self.file.append(f"\tble \tloop\n")
+            else:
+                self.file.append(f"\tbge \tloop\n")
+
+
+            # i = startValue.value
+
+            # if stepValue >= 0:
+            #     condition = lambda: i < endValue.value
+            # else:
+            #     condition = lambda: i > endValue.value
+
+            # while condition():
+            #     context.symbols.update({node.varNameToken: Number(i, None)})
+            #     i += stepValue
+            #     self.compile(node.bodyNode, context)
 
         # compileFunctionNode :: FunctionNode -> Context -> Function
         def compileFunctionNode(node: FunctionNode, context: Context) -> Function:

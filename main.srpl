@@ -51,9 +51,17 @@ flush execute sommig with 34 now
  
 task fact with n contains 
 	variable result is 1 
-	for variable i is 2 to 6 then 
+	for variable i is 2 to n plus 1 then 
 		variable result is result multiplied_by i end 
 	flush result end 
 
 flush execute fact with 5 now 
 flush i 
+
+task neg_for with n contains 
+	variable result is 1 
+	for variable i is 10 to 0 step 0 min 2 then 
+		variable result is result plus i end 
+	flush result end 
+
+flush execute neg_for with 5 now 

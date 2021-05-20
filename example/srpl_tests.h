@@ -18,10 +18,12 @@ extern bool or_test(uint8_t);
 extern bool not_equals(uint8_t, uint8_t);
 extern uint8_t divide(uint8_t, uint8_t);
 extern uint16_t multiply(uint8_t, uint8_t);
-extern uint16_t fact(uint8_t);
+extern int fact(int);
+extern int neg_for(int);
 
 bool and_test_desired(uint8_t);
 bool or_test_desired(uint8_t);
+int negative_for(int);
 
 bool run_tests();
 
