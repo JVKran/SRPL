@@ -51,6 +51,15 @@ while i is_less_than 5 then
 
 flush i 
 ```
+### For-loops
+For-loops are fully supported as of version 2.1. Not just a simple version though; with custom stepsize that can be both positive or negative.
+``` SRPL
+task fact with n contains 
+	variable result is 1 
+	for variable i is 2 to n then 
+		variable result is result multiplied_by i end 
+	flush result end 
+```
 ### If-statements
 If statements can have an optional else statement. Furthermore, all conventional conditions are supported.
 For a complete list; check out [tokens.py](lex/token.py).
