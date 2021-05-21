@@ -10,5 +10,5 @@ less_equal:
 	cmp 	r1, r0
 	adc 	r2, r2, r3		        @ Register r2 contains wether r0 is less than or equal to r1.
 end:
-	movs	r0, r2                    	@ Move contents of r2 to r0 for returning.
+	movs	r0, r2                    @ Move contents of r2 to r0 for returning.
 	pop 	{ pc }

@@ -23,5 +23,5 @@ or_test:
 	orr 	r5, r5, r7
 	lsr 	r5, r5, #31		        @ Register r5 contains wether r2 or r4 is larger than 0.
 end:
-	movs	r0, r5                    	@ Move contents of r5 to r0 for returning.
+	movs	r0, r5                    @ Move contents of r5 to r0 for returning.
 	pop 	{ r4, r5, r6, r7, pc }

@@ -17,5 +17,5 @@ if_test:
 	movs	r3, #0					@ Register r3 contains 0.
 .L4:
 end:
-	movs	r0, r3                    	@ Move contents of r3 to r0 for returning.
+	movs	r0, r3                    @ Move contents of r3 to r0 for returning.
 	pop 	{ pc }

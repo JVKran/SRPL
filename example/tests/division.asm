@@ -12,5 +12,5 @@ divide:
 	mov 	r2, r0					@ Store result of division in r2.
 	pop 	{r0, r1}				@ Restore original values of r0 and r1.
 end:
-	movs	r0, r2                    	@ Move contents of r2 to r0 for returning.
+	movs	r0, r2                    @ Move contents of r2 to r0 for returning.
 	pop 	{ pc }

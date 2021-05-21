@@ -18,5 +18,5 @@ loop:
 	cmp 	r3, #1            		@ Register r3 contains wether condition is met or not.
 	beq 	loop            		@ Branch to loop when condition is met.
 end:
-	movs	r0, r1                    	@ Move contents of r1 to r0 for returning.
+	movs	r0, r1                    @ Move contents of r1 to r0 for returning.
 	pop 	{ r4, pc }

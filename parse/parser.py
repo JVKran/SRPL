@@ -99,7 +99,7 @@ def arithmeticExpression(tokenList : List[Token], tokenIndex : int) -> Tuple[int
 def expression(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Node]:
     """ Parse an expression
     This function parses an expression in the broadest term possible. Can be either of a variable,
-    if-statement, while-loop, function definition, function call or an operator.
+    if-statement, while-loop, for-loop, function definition, function call or an operator.
 
     Parameters:
         tokenList (List): The list with tokens to parse.
@@ -130,7 +130,7 @@ def expression(tokenList : List[Token], tokenIndex : int) -> Tuple[int, Node]:
 # ifExpr :: [Token] -> Integer -> Tuple
 def ifExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, IfNode]:
     """ Parse if-statement
-    This function parses an if-statement and (when given) also the else-expression.
+    This function parses an if-statement and (when provided) also the else-expression.
 
     Parameters:
         tokenList (List): The list with tokens to parse.
@@ -186,7 +186,20 @@ def whileExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, WhileNode
         tokenIndex = increment(tokenIndex, tokenList, FunctionEndToken)
         return tokenIndex, WhileNode(condition, expr)
 
+# forExpr :: [Token] -> Integer -> Tuple
 def forExpr(tokenList : List[Token], tokenIndex : int) -> Tuple[int, ForNode]:
+    """ Parse for-loop
+    This function parses a for-loop with corresponding intial, end and optional
+    step-value. 
+
+    Parameters:
+        tokenList (List): The list with tokens to parse.
+        tokenIndex (int): The current index at which we're parsing the tokenList.
+    
+    Returns:
+        int: The incremented token index.
+        ForNode: A ForNode with the expression to execute as long as the condition is met.
+    """
     tokenIndex = increment(tokenIndex, tokenList, ForToken)
     tokenIndex, startNode = variable(tokenList, tokenIndex)
     tokenIndex = increment(tokenIndex, tokenList, ToToken)
@@ -255,9 +268,9 @@ def functionCall(tokenList : List[Token], tokenIndex : int) -> Tuple[int, CallNo
     tokenIndex, name = expression(tokenList, tokenIndex)
     if type(tokenList[tokenIndex]) == FunctionParameterToken:
         tokenIndex = increment(tokenIndex, tokenList)
-        if type(tokenList[tokenIndex]) == NowToken:
+        if type(tokenList[tokenIndex]) == NowToken:             # Function call without parameters.
             tokenIndex = increment(tokenIndex, tokenList)
-        else:
+        else:                                                   # Funcation call with parameters.
             arguments = []
             tokenIndex, intExpr = expression(tokenList, tokenIndex)
             arguments.append(intExpr)

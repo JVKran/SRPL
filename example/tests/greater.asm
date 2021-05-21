@@ -11,5 +11,5 @@ greater:
 	movs	r2, #0
 .L2:								@ Register r2 contains wether r0 is greater than r1.
 end:
-	movs	r0, r2                    	@ Move contents of r2 to r0 for returning.
+	movs	r0, r2                    @ Move contents of r2 to r0 for returning.
 	pop 	{ pc }

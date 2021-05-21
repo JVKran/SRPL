@@ -9,5 +9,5 @@ not_equals:
 	sub 	r3, r2, #1
 	sbc 	r2, r2, r3		        @ Register r2 contains wether r0 and r1 are not equal.
 end:
-	movs	r0, r2                    	@ Move contents of r2 to r0 for returning.
+	movs	r0, r2                    @ Move contents of r2 to r0 for returning.
 	pop 	{ pc }
