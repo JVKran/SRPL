@@ -224,21 +224,23 @@ class Compiler():
                 stepNode = self.compile(node.stepNode, context)
             else:
                 stepNode = Number(1, None, context.registers.pop(0))
-                self.file.append(f"\tmovs\t{stepNode.register}, #1\n")                             # Step-size defaults to 1.
+                self.file.append(f"\tmovs\t{stepNode.register}, #1\n")     # Step-size defaults to 1.
             
+            self.file.append("\t@ Should for-loop be entered?\n")
             if stepNode.value >= 0:
-                self.file.append(f"\tcmp \t{endValue.register}, {startValue.register}\n")
-                self.file.append(f"\tbeq \tend\n")
+                self.file.append(f"\tcmp \t{endValue.register}, #{max(0, startValue.value - 1)}\n")
+                self.file.append(f"\tble \tend\n")
             else:
-                self.file.append(f"\tcmp \t{endValue.register}, #0\n")
-                self.file.append(f"\tblt \tend\n")
+                self.file.append(f"\tcmp \t{endValue.register}, #{max(0, startValue.value - 1)}\n")
+                self.file.append(f"\tbgt \tend\n")
 
             self.file.append("loop:\n")
             self.compile(node.bodyNode, context)
             self.file.append(f"\tadd \t{startValue.register}, {stepNode.register}\
-                \t@ Increment counter with stepsize.\n")                                             # Increment counter with stepsize.                                          # Increment counter with stepsize.
+                \t@ Increment counter with stepsize.\n")
             self.file.append(f"\tcmp \t{startValue.register}, {endValue.register}\
                 \t@ Compare counter with value to iterate towards.\n")
+            
             if stepNode.value >= 0:
                 self.file.append(f"\tble \tloop\n")
             else:
