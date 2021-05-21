@@ -9,14 +9,14 @@ Litteraly everybody working in IT has *at least touched* code once and is able t
 SRPL can interpret a file, can be used as a shell and is able to compile files to assembly.
 To start the shell, execute ```python srpl.py``` in the commandline.
 To run 'main.srpl' execute ```python srpl.py main.srpl``` in the commandline. Please note that the newlines can be replaced by semicolons and that every line in the file needs to end with a space.
-To compile an SRPL sourcefile, execute ```python srpl.py example/source/even.srpl example/source/even.asm```. The SRPL sourcecode in even.srpl will then be compiled to assembly in even.asm. 
+To compile an SRPL sourcefile, execute ```python srpl.py example/source/even.srpl example/source/even.asm```. The SRPL sourcecode in even.srpl will then be compiled to assembly in even.asm. For large code-bases one can (luckily) compile all SRPL source files in any parent-directory by executing ```compile``` in the SRPL shell.
 
 ### Compiler
 The compiler has been written with compatibility and simplicity in mind; it's very efficient most of the times, but for example the checking of conditions is done in such a way that it's easier to read than it is fast. This checking of conditions is done by first storing the boolean representation in a register and then checking for it being larger than 0. This could also have been done with a more complex branch statement, but hey; the method described above is very suited to the ideology behind SRPL.
 
-Furthermore, only the really used registers are pushed to the stack and there's a neat optimization that recognizes registers being used in either case of an if-statements. This results in registers being allowed to be used in both the if- and else-statement. Other than that, there's one more feature that's very suited to SRPL; informative comment generation. This allows for easy checks of the compiled assembly files.
+Furthermore, only the really used registers are pushed to the stack and there's a neat optimization that recognizes registers being used in either case of an if-statement. This results in registers being allowed to be used in both the if- and else-statement. Other than that, there's one more feature that's very suited to SRPL; informative comment generation. This allows for easy checks of the compiled assembly files.
 
-Last but not least, the compiler has been tested extensively with the help of unit-tests. These can be found in the [example directory](example).
+Last but not least, the compiler has been tested extensively with the help of unit-tests. These can be found in the [example directory](example) and can be compiled with the ```compile``` command in the SRPL shell.
 
 ### Float and Int
 The heart of this language is the number. Numbers can be an integer or a float. Furthermore, a ```true``` is seen as a Number larger than 0.
@@ -34,7 +34,7 @@ variable part is product divided_by 2.1
 variable freezing is part min 90 
 ```
 ### Functions
-Functions can have zero or more parameters and can return zero or more values. Furthermore, a file can contain multiple functions.
+Functions (when interpreted) can have zero or more parameters and can return zero or more values. Furthermore, a file can contain multiple functions.
 ``` SRPL
 task add with a and b contains 
 	flush a plus b end 
@@ -83,7 +83,7 @@ variable wasntTwenty is execute applyCopy with wastnZero & makeTwenty now
 flush wasntTwenty 
 ```
 ### Multi-return
-Unlike most other languages, functions and the file can return multiple values. This has been done since it's more natural to non-it people. Executing multiple tasks yields multiple results; not one single.
+Unlike most other languages, functions and the file can return multiple values. This has been done since it's more natural to non-it people. Executing multiple tasks yields multiple results; not one single. As one can imagine, this doesn't work when it's compiled to assembly. Then only the last return statement is effective.
 ``` SRPL
 task multi contains 
     flush 3 

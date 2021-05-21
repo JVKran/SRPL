@@ -60,7 +60,7 @@ flush i
 
 task neg_for with n contains 
 	variable result is 1 
-	for variable i is 10 to 0 step 0 min 2 then 
+	for variable i is 10 to 0 step min 2 then 
 		variable result is result plus i end 
 	flush result end 
 

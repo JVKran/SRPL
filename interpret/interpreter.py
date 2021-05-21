@@ -114,25 +114,30 @@ def visit(node : Node, context : Context) -> Union[Number, List[Number]]:
             return visitWhileNode(node, context)        # Then check for meeting condition.
         return
 
+    # visitForNode :: ForNode -> Context -> Nothing
     def visitForNode(node: ForNode, context: Context) -> None:
+        """ Interpret for-loop
+        Execute the for-body for as long as the iterator is within the desired
+        range.
+
+        Parameters:
+            node (ForNode): The for node to interpret.
+            context (Context): The context to use for interpreting condition and body.
+        """
         startValue = visit(node.startNode, context)
         endValue = visit(node.endNode, context)
-        if node.stepNode:
-            stepValue = visit(node.stepNode, context).value
-        else:
-            stepValue = 1
-        
-        i = startValue.value
+        stepValue = visit(node.stepNode, context).value if node.stepNode else 1
+        condition = (lambda i: i < endValue.value) if stepValue >= 0 else (lambda i: i > endValue.value)
 
-        if stepValue >= 0:
-            condition = lambda: i < endValue.value
-        else:
-            condition = lambda: i > endValue.value
+        # iterate :: Integer -> Nothing
+        def iterate(i: int):
+            if condition(i):
+                context.symbols.update({node.varNameToken: Number(i, None)})
+                visit(node.bodyNode, context)
+                return iterate(i + stepValue)
+            return
 
-        while condition():
-            context.symbols.update({node.varNameToken: Number(i, None)})
-            i += stepValue
-            visit(node.bodyNode, context)
+        iterate(startValue.value)
 
     # visitFunctionNode :: FunctionNode -> Context -> Function
     def visitFunctionNode(node : FunctionNode, context : Context) -> Function:

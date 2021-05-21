@@ -10,8 +10,8 @@ neg_for:
 	movs	r3, #0					@ Register r3 contains 0.
 	movs	r4, #2					@ Register r4 contains 2.
 	sub 	r3, r4         			@ Register r3 contains result from substraction of registers r3 and r4.
-	cmp 	r0, #0
-	blt 	end
+	cmp 	r2, r0
+	beq 	end
 loop:
 	add 	r1, r0         			@ Register r1 contains result from addition of registers r1 and r0.
 	add 	r0, r3                	@ Increment counter with stepsize.

@@ -1,10 +1,12 @@
 ## Course requirements
 The Hogeschool Utrecht demands some specific things that are required for passing the course 'Advanced Technical Programming'. They will be described below. Furthermore, the (dutch) [video](https://youtu.be/ZOofobzfqxk) can be found on YouTube.
 
+> Since the last assignment (consisting of writing a lexer, parser and interpreter), some changes have been made to the existing code-base. These changes consist of the documentation (which is way more extensive now) and supporting for-loops with a custom step-size. Other than that _only_ the compiler has been added.
+
 ### Turing Completeness
 First of all, the language should be Turing Complete. It is stated that any language is *certainly* turing complete if it has conditional branching (which is the case with the implemented if-else-statement), it has the ability to change an arbitrary amount of memory (with, for example, the implemented variables) and it can run forever (with, again for example, the supported while-loop or plain recursion). Furthermore, it should be able to use infinite memory. Of course this is limited by the hardware, but SRPL doesn't restrict the amount of memory usage. Hence, we can conclude SRPL is Turing Complete. The recursively typed *certaintly* has a reason though; a language doesn't have to specifically support these things (Brainf*ck for example is also Turing Complete), but they do prove a language is Turing Complete. (Minsky, 1961)
 
-Another way of proving Turing Completeness consists of showing another Turing Complete language with the same features. This is way easier of course, but doesn't teach you anything. Nevertheless, for more certainty; SRPL supports the same features as the Turing Complete language [VES++](https://github.com/vera98x/Interpreter) apart from print statements and comments.
+Another way of proving Turing Completeness consists of showing another Turing Complete language with the same features. This is way easier of course, but doesn't teach you anything. Nevertheless, for more certainty; SRPL supports the same (and more) features as the Turing Complete language [VES++](https://github.com/vera98x/Interpreter) apart from print statements and comments.
 
 > **Recursionlimit**: Please note though that this language is built upon Python and Python lacks tail recursion optimizatons; the program is only able to run forever when the recursive function periodically returns and is started again. One can reduce the size of this problem by calling ```sys.setrecursionlimit()``` after getting the current limit by calling ```sys.getrecursionlimit()``` and adding a value or 500-1000.
 
@@ -32,13 +34,13 @@ Map however, gained the crown with 4 uses. In [interpreter.py](interpret/interpr
 Last but not least, ```filter``` has also been used. More specifically in [interpreter.py](interpret/interpreter.py) at line 106 for removing all None elements from the list and in [lexer.py](lex/lexer.py) at line for removing empty strings.
 
 ### Loops
-My language supports loops, but also lambdas. Go-to statements have not and will not be implemented. For an example, checkout the main [README](README.md).
+My language supports while- and for-loops, but also lambdas. Go-to statements have not and will not be implemented. For an example, checkout the main [README](README.md).
 
 ### Compilation
-I've deliberately deviated from the 'requirement' of using a Makefile to compile the SRPL sourcefiles to assembly files since I've had trouble calling python from within Makefiles. Furthermore, it isn't very intuitive. As much as I'd want SRPL to seamlessly integrate with C-sourcefiles, that's not gonna happen. Hence, it's quite intuitive to use an SRPL shell command for compiling files.
+I've deliberately deviated from the 'requirement' of using a Makefile to compile the SRPL sourcefiles to assembly files since I've had trouble calling python from within Makefiles with Windows. Furthermore, it isn't very intuitive. As much as I'd want SRPL to seamlessly integrate with C-sourcefiles, that's not gonna happen. Hence, it's quite intuitive to use an SRPL shell command for compiling files.
 
 ### Informative comment generation
-The compiler doesn't only compile SRPL sources to assembly, but also provides the user with informative comments. This allows for easy 'interpretation' of the compiles assembly files.
+The compiler doesn't only compile SRPL sources to assembly, but also provides the user with informative comments. This allows for easy 'interpretation' of the compiled assembly files.
 
 ### Register optimizations
 Only really used registers are pushed to and popped from the stack. This is done by just compiling the SRPL source code and then later on writing the push and pop statements in the assembly file.

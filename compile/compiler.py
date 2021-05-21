@@ -205,7 +205,19 @@ class Compiler():
             self.file.append(f"\tbeq \tloop\
             \t\t@ Branch to loop when condition is met.\n")                                  # If condition is met; go back to loop label.
 
+        # compileForNode :: ForNode -> Context -> Nothing
         def compileForNode(node: ForNode, context: Context) -> None:
+            """ Compile for-loop
+            The for-loop might seem pretty complex at first, but it really isn't. First of all,
+            the start, end and step value of the iterator are 'compiled'. This results in registers
+            containing these values. Then, the initial value of the iterator is checked. When it's 
+            invalid, the function branches to the end. Otherwise, one executes the codeSequence as
+            long as the iterator is smaller (or larger depending on step size) than the end value.
+
+            Parameters:
+                node (ForNode): The for node to compile.
+                context (Context): The context to use for allocating registers and labels.
+            """
             startValue = self.compile(node.startNode, context)
             endValue = self.compile(node.endNode, context)
             if node.stepNode:
@@ -215,10 +227,10 @@ class Compiler():
                 self.file.append(f"\tmovs\t{stepNode.register}, #1\n")                             # Step-size defaults to 1.
             
             if stepNode.value >= 0:
-                self.file.append(f"\tcmp \t{startValue.register}, #1\n")
-                self.file.append(f"\tble \tend\n")
+                self.file.append(f"\tcmp \t{endValue.register}, {startValue.register}\n")
+                self.file.append(f"\tbeq \tend\n")
             else:
-                self.file.append(f"\tcmp \t{startValue.register}, #0\n")
+                self.file.append(f"\tcmp \t{endValue.register}, #0\n")
                 self.file.append(f"\tblt \tend\n")
 
             self.file.append("loop:\n")
@@ -231,19 +243,6 @@ class Compiler():
                 self.file.append(f"\tble \tloop\n")
             else:
                 self.file.append(f"\tbge \tloop\n")
-
-
-            # i = startValue.value
-
-            # if stepValue >= 0:
-            #     condition = lambda: i < endValue.value
-            # else:
-            #     condition = lambda: i > endValue.value
-
-            # while condition():
-            #     context.symbols.update({node.varNameToken: Number(i, None)})
-            #     i += stepValue
-            #     self.compile(node.bodyNode, context)
 
         # compileFunctionNode :: FunctionNode -> Context -> Function
         def compileFunctionNode(node: FunctionNode, context: Context) -> Function:
