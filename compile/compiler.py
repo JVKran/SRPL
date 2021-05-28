@@ -18,10 +18,6 @@ class Compiler():
         Intialize the compiler by providing some feedback to the user and opening the
         possibly already existing file. Previous contents are overwritten.
 
-        Please note that registers 4 to 8 are always pushed, regardless of them being
-        used or not. This has been done to minimize complexity. Furthermore, these few
-        stack pushes and pops aren't that cpu intensive.
-
         Parameters:
             sourceFile (str): The name of the SRPL sourcefile to compile.
             targetFile (str): The name of the assembly targetfile to write to.
@@ -51,8 +47,8 @@ class Compiler():
             highestRegisterIndex: int = registers.index(max(self.file[5]))
             usedRegisters: str = registers[0:highestRegisterIndex + 1]
         except ValueError:
-            usedRegisters = []
-        usedRegisters: str = ', '.join(usedRegisters)  # Create comma separated string with registers.
+            usedRegisters = []                          # No higher registers have been used.
+        usedRegisters: str = ', '.join(usedRegisters)   # Create comma separated string with registers.
         if len(usedRegisters) > 0:
             registersToPop = f"\tpop \t{{ {usedRegisters}, pc }}"
             registersToPush = f"\tpush \t{{ {usedRegisters}, lr }}\n"
@@ -60,7 +56,7 @@ class Compiler():
             registersToPop = f"\tpop \t{{ pc }}"
             registersToPush = f"\tpush \t{{ lr }}\n"
         self.file.append(registersToPop)
-        self.file[5] = registersToPush
+        self.file[5] = registersToPush                  # Replace set with textual representation.
 
         file = open(self.targetFile, "w")
         self.file = map(lambda x:x, self.file)
@@ -69,20 +65,18 @@ class Compiler():
     
     def compile(self, node: Node, context: Optional[Context] = None) -> Optional[Union[Number, List[Number], Function]]:
         """ Compile node
-        Compile node by visiting all nodes in the Abstract Syntax Tree. For this to be possible,
-        all nodes have to be 'created'. This means that all calculations are still made, functions
-        are still called and while loops are still executed. Note that this, however, only happens 
-        once to determine what numbers are created and thus what registers have to be used in what
-        way.
-
-        This can also be concluded by the fact that the structure of the code for the compiler 
-        largeley resembles that of the interpreter; they're practically the same.
+        Compile node by visiting all nodes in the Abstract Syntax Tree. Since all 
+        nodes are visted, the code-structures of the interpreter and compiler are
+        practically the same.
 
         Parameters:
             node (Node): The node to compile(/visit).
             context (Context): The context to use for allocating registers and labels.
+
+        Returns:
+            Anything: Any possible result of any of the compile methods.
         """
-        if not context:             # If no context has been given; use new context.
+        if not context:             # If no context has been given; use own context.
             context = self.context
 
         # compileOperatorNode :: OperatorNode -> Context -> Number
@@ -108,8 +102,9 @@ class Compiler():
         # compileNumbernode :: NumberNode -> Context -> Number
         def compileNumberNode(node: NumberNode, context: Context) -> Number:
             """ Compile number
-            Compilation of numbernodes consists of two responsibilities; creating the number to
-            allow traversing of the AST and allocating a register with the desired value.
+            Compilation of numbernodes consists of two responsibilities; creating 
+            the number to allow for further compilation and allocating a register 
+            with the desired value.
 
             Parameters:
                 node (NumberNode): The number node to compile.
@@ -175,6 +170,7 @@ class Compiler():
             resultRegister = context.registers[0]
             self.file[5].add(resultRegister)
             res = self.compile(node.expression, context)
+            remainingRegisters = context.registers                               # Remaining registers when if-expression is executed.
             self.file.append(f"\tb   \t{afterElse} \
             \t\t@ Branch to end of if/else-statement.\n")                        # Don't also execute else-expression; so branch to label after else expression.
             self.file.append(f"{afterIf}:\n")
@@ -184,6 +180,7 @@ class Compiler():
                 if(type(node.elseExpression) == CallNode):
                     self.file.append(f"\tmovs\t{resultRegister}, r0\n")         # Inherent to the way SRPL deals with variables and return values.
             self.file.append(f"{afterElse}:\n")
+            context.registers = min(context.registers, remainingRegisters)      # Free registers on context are the least amount of free registers.
             return res
 
         # compileWhileNode :: WhileNode -> Context -> Nothing
@@ -209,7 +206,7 @@ class Compiler():
         def compileForNode(node: ForNode, context: Context) -> None:
             """ Compile for-loop
             The for-loop might seem pretty complex at first, but it really isn't. First of all,
-            the start, end and step value of the iterator are 'compiled'. This results in registers
+            the start, end and step value of the iterator are compiled. This results in registers
             containing these values. Then, the initial value of the iterator is checked. When it's 
             invalid, the function branches to the end. Otherwise, one executes the codeSequence as
             long as the iterator is smaller (or larger depending on step size) than the end value.
@@ -226,13 +223,11 @@ class Compiler():
                 stepNode = Number(1, None, context.registers.pop(0))
                 self.file.append(f"\tmovs\t{stepNode.register}, #1\n")     # Step-size defaults to 1.
             
+            self.file.append(f"\tcmp \t{endValue.register}, #{max(0, startValue.value - 1)}\
+            \t\t@ Is iterator in valid range for entering of for-loop?\n")
             if stepNode.value >= 0:
-                self.file.append(f"\tcmp \t{endValue.register}, #{max(0, startValue.value - 1)}\
-                \t@ Is iterator in valid range for entering of for-loop?\n")
                 self.file.append(f"\tble \tend\n")
             else:
-                self.file.append(f"\tcmp \t{endValue.register}, #{max(0, startValue.value - 1)}\
-                \t@ Is iterator in valid range for entering of for-loop?\n")
                 self.file.append(f"\tbgt \tend\n")
 
             self.file.append("loop:\n")
@@ -252,7 +247,7 @@ class Compiler():
             """ Compile function
             The function node is (again) very easy to compile; a lot is delegated to the other 
             functions of course. Just add the function to the symbol table, allocate registers
-            for the parameters and 'execute' the function so the nodes in the functionbody can
+            for the parameters and compile the function so the nodes in the functionbody can
             also be compiled.
 
             Parameters:
@@ -265,7 +260,7 @@ class Compiler():
             functionValue = Function(node.name, node.codeSequence, node.arguments, context)
             context.symbols[node.name] = functionValue
             arguments = list(map(lambda _: Number(0, 0, context.registers.pop(0)), node.arguments))
-            codeSequence, context = functionValue.execute(arguments, context)
+            codeSequence, context = functionValue.compile(arguments, context)
             return self.compile(codeSequence, context)
 
         # compileCallNode :: CallNode -> Context -> Nothing
@@ -298,7 +293,7 @@ class Compiler():
                 Number: A (possibly list of) Number(s) with the result of the expression.
             """
             returnNodes = map(lambda element: ReturnNode == type(element), node.elementNodes)
-            returnPresent: Number = reduce(add, returnNodes, 0)                         # Are there any nodes that really flush something?
+            returnPresent: Number = reduce(add, returnNodes, 0)                 # Are there any nodes that really flush something?
             
             def compileElement(elementNode):
                 if not returnPresent:

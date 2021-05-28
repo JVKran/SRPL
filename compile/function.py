@@ -1,6 +1,5 @@
 from typing import List, Tuple
 from interpret.context import Context
-from compile import compiler
 from compile.number import Number
 from parse.nodes import ListNode
 
@@ -13,11 +12,20 @@ class Function:
         self.argumentNames = argumentNames
         self.context = context
 
-    # execute :: [Number] -> Context -> Number
-    def execute(self, arguments : List[Number], context : Context) -> Number:
-        """ 'Execute' function
+    # compile :: [Number] -> Context -> Number
+    def compile(self, arguments : List[Number], context : Context) -> Tuple[ListNode, Context]:
+        """ Compile function
         Funny thing here is that nothing is executed nor compiled; this is up to the
-        Cortex M0. We only add the arguments to the symboltable.
+        compiler. We only add the arguments to the symboltable and return the code-
+        sequence that has to be compiled.
+
+        Parameter:
+            arguments (List[Number]): The list with arguments to pass to the function.
+            parentContext (Context): The context of which the symbols should be updated.
+
+        Returns:
+            codeSequence: The code sequence for the compiler to compile.
+            context: The context to use for compilation.
         """
         assert(len(arguments) == len(self.argumentNames))
         zippedArguments: List[Tuple[str, Number]] = list(zip(self.argumentNames, arguments))

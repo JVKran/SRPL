@@ -2,6 +2,17 @@ from typing import Union, List
 from interpret.context import Context
 
 class Number():
+    """ Compile numbers
+    This class contains the ability to compile numbers and their operators.
+    Hence, this class is practically the heart of the compiler.
+
+    Most methods are very trivial and easy to understand. There are, however,
+    a couple of comparison operators that have turned out quite large.
+
+    This is because of the nature of SRPL. Furthermore, the  chosen implementation 
+    doesn't require distinguishing wether the comparison is for a variable 
+    assignment or an if-statement; way less code and easier to understand.
+    """
 
     # __init__ :: Integer | Float -> Integer -> Nothing
     def __init__(self, value : Union[int, float], lineNumber : int, register : str):
