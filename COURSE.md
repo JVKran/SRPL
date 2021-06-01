@@ -1,5 +1,5 @@
 ## Course requirements
-The Hogeschool Utrecht demands some specific things that are required for passing the course 'Advanced Technical Programming'. They will be described below. Furthermore, the (dutch) [video](https://youtu.be/ZOofobzfqxk) can be found on YouTube.
+The Hogeschool Utrecht demands some specific things that are required for passing the course 'Advanced Technical Programming'. They will be described below. Furthermore, the (dutch) [video of the lexer, parser and interpreter](https://youtu.be/ZOofobzfqxk) and the [video of the compiler](https://youtu.be/tHYeBItHkLc) can be found on YouTube.
 
 > Since the last assignment (consisting of writing a lexer, parser and interpreter), some changes have been made to the existing code-base. These changes consist of the documentation (which is way more extensive now) and supporting for-loops with a custom step-size. Other than that _only_ the compiler has been added.
 
@@ -31,7 +31,7 @@ The higher order function ```reduce``` is used in [interpreter.py](interpret/int
 
 Map however, gained the crown with 4 uses. In [interpreter.py](interpret/interpreter.py) at line 79 and 105 for example, it has been used to append the value of an argument to the arguments or elements (for line 105) list. Very useful when the argument isn't a number, but a variable or an expression... In the same file at line 94 it's used for creating a list with booleans representing wether the node at that index is a ReturnNode. This is later used by reduce, as already stated.
 
-Last but not least, ```filter``` has also been used. More specifically in [interpreter.py](interpret/interpreter.py) at line 106 for removing all None elements from the list and in [lexer.py](lex/lexer.py) at line for removing empty strings.
+Last but not least, ```filter``` has also been used. More specifically in [interpreter.py](interpret/interpreter.py) at line 106 for removing all None elements from the list and in [lexer.py](lex/lexer.py) at line for removing empty strings. For the compiler-assignment, even more higher order functions have been used; it has become a habit.
 
 ### Loops
 My language supports while- and for-loops, but also lambdas. Go-to statements have not and will not be implemented. For an example, checkout the main [README](README.md).
