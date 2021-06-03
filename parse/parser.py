@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2021 Jochem van Kranenburg <jochem.vankranenburg@outlook.com>
+# PDX-License-Identifier: AGPL-3.0 License
+
 from typing import Callable, Tuple, List, TypeVar
 from parse.error import increment
 from parse.nodes import *

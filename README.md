@@ -18,6 +18,9 @@ Furthermore, only the really used registers are pushed to the stack and there's 
 
 Last but not least, the compiler has been tested extensively with the help of unit-tests. These can be found in the [example directory](example) and can be compiled with the ```compile``` command in the SRPL shell.
 
+### Documentation
+Everything has been documented with usability and neccesity in mind. This boils down to not documenting every method or function, but just making sure every 'type' of function has at least been documented once. Documenting every operator of a number for example, would be useless and even distracting.
+
 ### Float and Int
 The heart of this language is the number. Numbers can be an integer or a float. Furthermore, a ```true``` is seen as a Number larger than 0.
 ``` SRPL

@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2021 Jochem van Kranenburg <jochem.vankranenburg@outlook.com>
+# PDX-License-Identifier: AGPL-3.0 License
+
 from typing import Union, List
 from interpret.context import Context
 
@@ -48,6 +51,14 @@ class Number():
         Please note that the popped register is added to the set of used registers at index 5 of the file.
         All functions that use registers should add the highest used register to that set so the compiler
         can determine what registers should be restored after function completion. This is used everywhere.
+
+        Parameters:
+            other (Number): The number to use for dividing this number (self).
+            context (Context): The context to use for 'allocating' registers.
+            file (List[str]): The 'file' to write the assembly code into.
+
+        Returns:
+            Number: The result of the operation; neccesary to allow for further compilation.
         """
         resultRegister = context.registers.pop(0)
         file[5].add(resultRegister)

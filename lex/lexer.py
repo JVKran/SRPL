@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2021 Jochem van Kranenburg <jochem.vankranenburg@outlook.com>
+# PDX-License-Identifier: AGPL-3.0 License
+
 from lex.token import Token
 from typing import TypeVar, Callable, List, Tuple, Optional
 

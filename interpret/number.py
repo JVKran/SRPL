@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: © 2021 Jochem van Kranenburg <jochem.vankranenburg@outlook.com>
+# PDX-License-Identifier: AGPL-3.0 License
+
 from typing import Union
 
 class Number():

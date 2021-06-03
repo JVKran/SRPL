@@ -1,6 +1,8 @@
+# SPDX-FileCopyrightText: © 2021 Jochem van Kranenburg <jochem.vankranenburg@outlook.com>
+# PDX-License-Identifier: AGPL-3.0 License
+
 from typing import List, Optional
 from lex.token import Token
-from parse import parser
 
 # increment :: Integer -> [Token] -> Token -> String | Nothing -> Integer
 def increment(tokenIndex: int, tokenList: List[Token], expectedToken: Optional[Token] = None, message: Optional[str] = None) -> int:
